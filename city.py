@@ -32,7 +32,7 @@ Path = List[NodeID]
 def get_osmnx_graph() -> OsmnxGraph:
     """ Retorna un graf dels carrers de Barcelona """
     g = ox.graph_from_place('Barcelona, Catalonia, Spain', simplify = True, network_type='walk')
-    save_osmnx_graph(g,'graf.dat1')
+    save_osmnx_graph(g,'graf.dat')
     return g
 
 def save_osmnx_graph(g: OsmnxGraph, filename: str) -> None:
@@ -72,8 +72,15 @@ def show_osmnxGraph(g: OsmnxGraph)-> None:
 
 
 # ----------------------------------------------- #
-# MÈTODES PER LA CREACIÓ I MOSTRA DEL CITY GRAPH #
+# MÈTODES PER LA CREACIÓ I MOSTRA DEL CITY GRAPH  #
 # ----------------------------------------------- #
+
+def get_speed(type : str)-> int:
+    """Donat un tipus d'aresta en retorna la velocitat a la que aquesta es recorre en metres per segon """
+    if type == "Tram":
+        return 7.5 # Velocitat mitjana en metres per segon del metre de barcelona
+    else:
+        return 1.5 # Velocitat mitjana del caminar d'una persona qualsevol en metres per segon.
 
 
 def add_Metro_Graph(City_Graph: CityGraph , Metro_Graph : MetroGraph)-> None:
@@ -101,7 +108,7 @@ def add_Metro_Graph(City_Graph: CityGraph , Metro_Graph : MetroGraph)-> None:
         info = Edge(_type, _distance, _colour_id)
 
         # Afegim tota la informació referent a l'aresta (tipus, distancia, color) dins info (classe Edge definida al mòdul de metro.py)
-        City_Graph.add_edge(edge[0], edge[1], attr = info)
+        City_Graph.add_edge(edge[0], edge[1],time = _distance/get_speed(_type) ,attr = info)
 
 
 
@@ -126,7 +133,7 @@ def add_Street_Graph(City_Graph : CityGraph, Street_Graph: OsmnxGraph)-> None:
          for v, edgesdict in nbrsdict.items():
              dist = edgesdict[0]["length"] # Els grafs d'OSMNX son MultiGrafs , per tant només considerem la primera aresta.
              info = Edge("Street", dist, "#F0F619")
-             City_Graph.add_edge(u,v,attr = info)
+             City_Graph.add_edge(u,v,time = dist/get_speed("Street"),attr = info)
 
 
 
@@ -145,8 +152,8 @@ def link_Street_with_Access(City_Graph: CityGraph, Street_Graph : OsmnxGraph,  M
                 if dist_min > dist_to_compare or dist_min == -1: # Si és el primer node que tractem o la distancia minima és menor a la que estem tractant
                     dist_min : int = dist_to_compare             # Actualitzem la distancia mínima i el node que la fa possible.
                     id_dist_min : int= node2
-            info = Edge("Street", dist_to_compare, "#FD940A")
-            City_Graph.add_edge(node1, id_dist_min, attr = info)
+            info = Edge("Street", dist_min, "#FD940A")
+            City_Graph.add_edge(node1, id_dist_min, time =dist_min/get_speed("Street") , attr = info)
 
 
 
@@ -178,7 +185,7 @@ def get_city_graph() -> CityGraph:
     Metro_Graph = get_metro_graph()
     Street_Graph = load_osmnx_graph("graf.dat")
     City_Graph = build_city_graph(Street_Graph, Metro_Graph)
-    save_city_graph(City_Graph,'city.dat')
+    save_city_graph(City_Graph,'city_graf.dat')
     return City_Graph
 
 # Pre: mirar com funciona pickle, i la funcio per veure si un fitxer existeix: os.path.exists
@@ -274,11 +281,11 @@ def add_auxiliary_elements(City_Graph: CityGraph, src: Coord, dst: Coord)-> None
     de qualsevol path amb tota l'estructura del graf """
     City_Graph.add_node("srcnode", coordinates = src)
     first_node  = nearest_node(City_Graph, src)
-    City_Graph.add_edge("srcnode", first_node[1], attr = Edge("Auxiliary", first_node[0], "#000000"))
+    City_Graph.add_edge("srcnode", first_node[1], time = first_node[0]/get_speed("Street") , attr = Edge("Auxiliary", first_node[0], "#000000"))
 
     City_Graph.add_node("dstnode", coordinates = dst)
     last_node = nearest_node(City_Graph, dst)
-    City_Graph.add_edge(last_node[1], "dstnode", attr = Edge("Auxiliary", last_node[0], "#000000"))
+    City_Graph.add_edge(last_node[1], "dstnode", time = last_node[0]/get_speed("Street"), attr = Edge("Auxiliary", last_node[0], "#000000"))
 
 def delete_auxiliary_elements(City_Graph: CityGraph)-> None:
     """ Elimina els nodes i arestes que hem hagut d'afegir per a un cas concret de cerca"""
@@ -295,7 +302,7 @@ def delete_auxiliary_elements(City_Graph: CityGraph)-> None:
 def find_path(City_Graph: CityGraph, src: Coord, dst: Coord) -> Path:
     """ Donat un origen(src) i un desti(dst), retorna el camí(Path) més ràpid """
     add_auxiliary_elements(City_Graph, src, dst)
-    Path = nx.shortest_path(City_Graph, source = "srcnode", target = "dstnode")
+    Path = nx.dijkstra_path(City_Graph, source = "srcnode", target = "dstnode", weight = "time")
     return Path
 
 def create_path_graph(City_Graph: CityGraph, path: Path)->PathGraph:
@@ -349,16 +356,17 @@ def add_path_nodes(m : StaticMap, g : PathGraph) -> StaticMap:
 
 #---------------------------------------------------#
 
-# City_Graph = load_city_graph("city.dat")
-#
-# plot(City_Graph, "vista.png")
-#
-# path = find_path(City_Graph, [2.1166690928052068,41.34435669904031], [2.176994976968411,41.389927924821095])
-# plot_path(City_Graph, path)
-# graph = create_path_graph(City_Graph, path)
-#
-# coords = nx.get_node_attributes(graph, "coordinates")
-# nx.draw(graph, coords, node_size = 10)
-# plt.show()
+City_Graph = load_city_graph("city_graf.dat")
+
+plot(City_Graph, "vista.png")
+
+#path = find_path(City_Graph, [2.1224736657028225, 41.39440575084319], [2.1722533841178095, 41.424977979527746])
+path = find_path(City_Graph, [2.1350594815841912,41.40990499200444], [2.1292361938137767,41.40032407926403])
+plot_path(City_Graph, path)
+graph = create_path_graph(City_Graph, path)
+
+coords = nx.get_node_attributes(graph, "coordinates")
+nx.draw(graph, coords, node_size = 10)
+plt.show()
 
 #---------------------------------------------------#
