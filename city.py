@@ -305,6 +305,14 @@ def find_path(City_Graph: CityGraph, src: Coord, dst: Coord) -> Path:
     Path = nx.dijkstra_path(City_Graph, source = "srcnode", target = "dstnode", weight = "time")
     return Path
 
+def get_time_path(Path : Path, City_Graph : CityGraph)-> float:
+    qty_nodes = len(Path)
+    time = 0
+    for i in range(1 , qty_nodes):
+        time += City_Graph.edges[Path[i-1] , Path[i]]["time"]
+    return time
+
+
 def create_path_graph(City_Graph: CityGraph, path: Path)->PathGraph:
     qty_nodes = len(path)
     graph = nx.Graph()
@@ -356,17 +364,18 @@ def add_path_nodes(m : StaticMap, g : PathGraph) -> StaticMap:
 
 #---------------------------------------------------#
 
-City_Graph = load_city_graph("city_graf.dat")
-
-plot(City_Graph, "vista.png")
-
-#path = find_path(City_Graph, [2.1224736657028225, 41.39440575084319], [2.1722533841178095, 41.424977979527746])
-path = find_path(City_Graph, [2.1350594815841912,41.40990499200444], [2.1292361938137767,41.40032407926403])
-plot_path(City_Graph, path)
-graph = create_path_graph(City_Graph, path)
-
-coords = nx.get_node_attributes(graph, "coordinates")
-nx.draw(graph, coords, node_size = 10)
-plt.show()
+# City_Graph = load_city_graph("city_graf.dat")
+#
+# plot(City_Graph, "vista.png")
+#
+# #path = find_path(City_Graph, [2.1224736657028225, 41.39440575084319], [2.1722533841178095, 41.424977979527746])
+# #path = find_path(City_Graph, [2.1350594815841912,41.40990499200444], [2.1292361938137767,41.40032407926403])
+# path = find_path(City_Graph, [2.0965190294167204,41.41618835553193], [2.122574472898867, 41.40071428187891])
+# plot_path(City_Graph, path)
+# graph = create_path_graph(City_Graph, path)
+#
+# coords = nx.get_node_attributes(graph, "coordinates")
+# nx.draw(graph, coords, node_size = 10)
+# plt.show()
 
 #---------------------------------------------------#
