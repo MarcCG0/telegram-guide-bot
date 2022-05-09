@@ -26,7 +26,7 @@ class Restaurant:
 
 Restaurants = List[Restaurant] # Definim Restaurants com una llista de Restaurants.
 
-def read() -> Restaurants:
+def read_restaurants() -> Restaurants:
     """A partir de la informació que conté el fitxer csv amb la base de dades dels restaurants, retorna un llistat de tots els restaurants"""
 
     #Fitxer on es troba tota l'informació referent als Restaurants
@@ -60,11 +60,15 @@ def read() -> Restaurants:
     return restaurants      # Un cop allistats tots els restaurants, els retornem.
 
 
-def find(query: str, restaurants : Restaurants) -> Restaurants:
+def find_restaurants(query: str, restaurants : Restaurants) -> Restaurants:
     """A partir d'un string d'entrada, retorna un llistat dels restaurants que contenen informació versemblant a aquest string en algun dels seus camps. """
     desired_restaurants : Restaurants = []
 
     for restaurant in restaurants:
+        # Com a màxim volem trobar 12 restaurants que s'adapten a la cerca.
+        if len(desired_restaurants) >= 12:
+            break
+
         features = [str(restaurant.name), str(restaurant.street_name), str(restaurant.street_number), str(restaurant.neighbourhood), str(restaurant.district), str(restaurant.zip_code), str(restaurant.town)]
         #Recorrem tots els camps d'un restaurant donat.
         for feature in features:
@@ -79,9 +83,9 @@ def find(query: str, restaurants : Restaurants) -> Restaurants:
 
 
 
-def main() :
-    restaurants_barcelona = read()
-    query = ei.read(str)
-    print(find(query, restaurants_barcelona))
-
-main()
+# def main() :
+#     restaurants_barcelona = read_restaurants()
+#     query = ei.read(str)
+#     print(find_restaurants(query, restaurants_barcelona))
+#
+# main()
