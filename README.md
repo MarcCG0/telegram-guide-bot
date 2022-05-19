@@ -24,7 +24,7 @@ Per poder dur a terme hem hagut d'usar les següents dades:
 ------------------------xdf-------------
 
 ## Instruccions
-Per tal de poder utilitzar el bot, primer haurem de tenir instal·lada l'aplicació Telegram®. Posteriorment, l'usuari s'haurà de registrar i a l'apartat de **xats** haurà de buscar `MetroYourRestaurant` per poder rebre les indicacions correctes per arribar al restaurant desitjat.
+Per tal de poder utilitzar el bot, primer l'usuari haurà de tenir instal·lada l'aplicació Telegram®. Posteriorment, s'haurà de registrar i a l'apartat de **xats** haurà de buscar `MetroYourRestaurant` per poder rebre les indicacions correctes per arribar al restaurant desitjat.
 
 Per inicialitzar el bot haurà d'introduir la comanda `/start`, a més podrà obtenir informació addicional de totes les comandes disponibles introduint `/help`, aquesta li mostrarà un llistat i només cal que segueixi les indicacions que el mateix bot li anirà proporcionant.
 
