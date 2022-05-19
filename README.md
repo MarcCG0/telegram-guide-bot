@@ -1,14 +1,18 @@
 # MetroNyan
 
-*Tria restaurant i vés-hi en metro!* 🍕 🚇
+Tria restaurant i vés-hi en metro 🍕 🚇
+
+*MetroYourRestaurant*, el bot que et porta en metro al restaurant que tu vols!
 
 
 ## Introducció
 
-Aquesta pàgina descriu el projecte MetroNyan, que correspon a la segona pràctica del curs 2022 d'AP2 al GCED. La vostra tasca consisteix en implementar un Bot de Telegram que permeti als barcelonins trobar restaurants d'acord a les seves preferències i ensenyar-los com arribar-hi el més ràpid possible en desplaçaments en metro i a peu.
+El projecte consisteix en un bot de Telegram® desenvolupat amb Python que té com a objectiu guiar l'usuari fins al restaurant que desitja el més rapid possible ja sigui a peu i/o en metro. Això sí, sempre i quan sigui dins de Barcelona!
 
-Per realitzar aquesta pràctica haureu d'utilitzar aquestes dades:
 
+--nosesical------------------------
+
+Per poder dur a terme hem hagut d'usar les següents dades:
 - El mapa dels carrers de Barcelona obtingut d'[Open Street Map](https://www.openstreetmap.org).
 
 - La [llista d'equipaments de restaurants de la ciutat de Barcelona](https://opendata-ajuntament.barcelona.cat/data/ca/dataset/equipament-restaurants).
@@ -17,10 +21,43 @@ Per realitzar aquesta pràctica haureu d'utilitzar aquestes dades:
 
 - La [Llistat dels accessos de Metro de TMB](https://developer.tmb.cat/data/accessos).
 
+------------------------xdf-------------
 
-## Arquitectura del sistema
+## Instruccions
+Per tal de poder utilitzar el bot, primer haurem de tenir instal·lada l'aplicació Telegram®. Posteriorment, l'usuari s'haurà de registrar i a l'apartat de **xats** haurà de buscar `MetroYourRestaurant` per poder rebre les indicacions correctes per arribar al restaurant desitjat.
 
-Els sistema consta dels mòduls següents:
+Per inicialitzar el bot haurà d'introduir la comanda `/start`, a més podrà obtenir informació addicional de totes les comandes disponibles introduint `/help`, aquesta li mostrarà un llistat i només cal que segueixi les indicacions que el mateix bot li anirà proporcionant.
+
+#### Comandes disponibles
+`/start` Inicialitza el bot
+
+`/help` Mostra llistat de les comandes disponibles i la funcionalitat d'aquestes
+
+`/author` Retorna els noms dels autors del projecte
+
+`/find <query>` Retorna una llista de màxim 12 restaurants que satisfan la cerca feta per l'usuari
+
+`/info <number>` Mostra la informació del restaurant especificat amb el número de la llista anterior
+
+`/guide <number>` Mostra el camí més ràpid des d'on es troba l'usuari fins al restaurant demanat (a través del número amb el que s'identifica a la llista anterior)
+
+`/travel_time` Diu el temps que es trigarà a fer la última ruta que s'ha fet amb */guide <number>*
+    
+## Requeriments
+Per tal de poder utilitzar sense cap problema el bot implementat, caldrà instal·lar les llibreries adjuntes en el fitxer `requirements.txt`.
+
+##Funcionalitat moduls??/estructura proj
+    
+##Fonts d'info??
+
+
+
+
+
+
+-----------------------------csdcwedc
+
+El projecte està format pels següents mòduls:
 
 - `restaurants.py` conté tot el codi relacionat amb la l'obtenció de la llista de restaurants i cerques relacionades.
 
