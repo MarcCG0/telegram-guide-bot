@@ -10,6 +10,7 @@ Tria restaurant i vés-hi en metro 🍕 🚇
 
 El projecte consisteix en un bot de Telegram® desenvolupat amb Python que té com a objectiu guiar l'usuari fins al restaurant que desitja el més rapid possible ja sigui a peu i/o en metro. Això sí, sempre i quan sigui dins de Barcelona!
 
+**INSERTAR FOTO EXEMPLE CONVERSA**
 
 --nosesical------------------------
 
@@ -43,7 +44,7 @@ Per inicialitzar el bot haurà d'introduir la comanda `/start`, a més podrà ob
 `/guide <number>` Mostra el camí més ràpid des d'on es troba l'usuari fins al restaurant demanat (a través del número amb el que s'identifica a la llista anterior)
 
 `/travel_time` Diu el temps que es trigarà a fer la última ruta que s'ha fet amb */guide <number>*
-    
+
 ## Requeriments
 Per tal de poder utilitzar sense cap problema el bot implementat, caldrà instal·lar les llibreries adjuntes en el fitxer `requirements.txt`.
 
@@ -58,7 +59,7 @@ class Restaurant: ...
 Restaurants: TypeAlias = List[Restaurant]
 ```
 
-També és l'encarregat de llegir totes les dades necessàries del fitxer **restaurants.csv** (adjunt dins la carpeta *dades*) i assignar cada atribut la columna del fitxer que li pertoca. També trobem la implementació dels diferents tipus de cerques (multiple i difusa) per tal de que quan l'usuari busqui un restaurant, el bot sigui capaç de retornar-li una llista que la satisfaci.
+També és l'encarregat de llegir totes les dades necessàries del fitxer **restaurants.csv** i assignar cada atribut la columna del fitxer que li pertoca. També trobem la implementació dels diferents tipus de cerques (multiple i difusa) per tal de que quan l'usuari busqui un restaurant, el bot sigui capaç de retornar-li una llista que la satisfaci.
     
 ```python3
 def find_restaurants(query: str, restaurants: Restaurants) -> Restaurants: ...
@@ -70,7 +71,7 @@ La cerca difusa, ens permetrà trobar resultats semblants a les cerques introdui
 La múltiple ens permetrà fer cerques que continguin més d'una paraula.
     
 ### Metro
-El mòdul `metro.py` recull la definició de les següents classes; Station, Access, Edge.
+El mòdul `metro.py` recull la definició de les següents classes: Station, Access, Edge.
 ```python3
 @dataclass
 class Station:
@@ -89,7 +90,7 @@ MetroGraph: TypeAlias = nx.Graph
 Stations: TypeAlias = List[Station]
 Accesses: TypeAlias = List[Access]
 ``` 
-L'objectiu d'aquest mòdul és crear el graf de la xarxa de metro de Barcelona. Per poder aconseguir-ho primer s'ha implementat una funció per obtenir les dades necessàries del fitxer **estacions.csv** i **accessos.csv** (també adjunts a la carpeta *dades*) i assignar cada atribut la columna del fitxer que li pertoca. 
+L'objectiu d'aquest mòdul és crear el graf de la xarxa de metro de Barcelona. Per poder aconseguir-ho primer s'ha implementat una funció per obtenir les dades necessàries dels fitxers **estacions.csv** i **accessos.csv** i assignar cada atribut la columna del fitxer que li pertoca. 
     
 ```python3
 def read_stations() -> Stations: ...
@@ -166,21 +167,21 @@ def build_city_graph(Street_Graph: OsmnxGraph,
                      Metro_Graph: MetroGraph) -> CityGraph: ... # fusio dels dos grafs
 ```
 
-Per poder guardar i obtenir el *CityGraph*, s'ha fet us de funcions similars a les implementades per a la creació i mostra de l'*OsmnxGraph*, es comença creant l'*StreetGraph*, cridant les diferents funcions que s'han implementat abans. Després ees guarda en un fitxer i finalment retorna el graf gurdat en el fitxer.
+Per poder guardar i obtenir el *CityGraph*, s'ha fet us de funcions similars a les implementades per a la creació i mostra de l'*OsmnxGraph*, es comença creant l'*StreetGraph*, cridant les diferents funcions que s'han implementat abans per crear la fusió entre el graf del metro i el dels carrers de Barcelona. Després es guarda en un fitxer i finalment retorna el graf gurdat en el fitxer.
 
 ```python3
-def get_city_graph() -> CityGraph: ...
-def save_city_graph(City_Graph: CityGraph, filename: str) -> None: ...
-def load_city_graph(filename: str) -> CityGraph: ...
+def get_city_graph() -> CityGraph: ... # retorna la fusió dels dos grafs
+def save_city_graph(City_Graph: CityGraph, filename: str) -> None: ... # desa el CityGraph a l'arxiu filename
+def load_city_graph(filename: str) -> CityGraph: ... # Retorna el graf guardat al fitxer filename
 ```
 
 Per mostrar-lo, s'ha seguit una metodologia semblant a el que s'ha fet per la presentació del graf del metro. S'han implementat varies funcions per tal d'aconseguir dibuixar el *CityGraph* per pantalla i després es millora aquesta mostra desant aquest graf sobre el mapa de Barcelona, gràcies a l'ajuda de l'StaticMap. Per poder aconseguir mostrar-lo sobre la imatge del mapa de Barcelona, hem d'afegir els nodes i les arestes del graf de la ciutat d'aquest sobre el mapa.
 
 ```python3
-def show_city(City_Graph: CityGraph) -> None: ...
-def plot_city(g: CityGraph, filename: str) -> None: ... 
-def add_city_nodes(m: StaticMap, g: CityGraph) -> StaticMap: ... 
-def add_city_lines(m: StaticMap, g: CityGraph) -> StaticMap: ... 
+def show_city(City_Graph: CityGraph) -> None: ... # dibuixa per pantalla el CityGraph
+def plot_city(g: CityGraph, filename: str) -> None: ... # guarda el citygraph dins d'un arxiu
+def add_city_nodes(m: StaticMap, g: CityGraph) -> StaticMap: ... # afegeix els nodes del graf a l'StaticMap
+def add_city_lines(m: StaticMap, g: CityGraph) -> StaticMap: ... # afegeix les arestes del graf a l'StaticMap
 ```
 
 Per tal de poder trobar el camí més ràpid que portarà l'usuari al restaurant desitjat, s'han creat dues funcions. La primera que retorna el camí més rapid donats un destí i un origen i la segona que calcula el temps de durada de la ruta.
@@ -221,12 +222,14 @@ def initialize(update, context): ... # inicialitza les dades per poder comprovar
 def indicate_path(path: Path, update, context) -> None: ... # dona indicacions per a facilitar el camí a l'usuari
 def where(update, context): ... # emmagatzema la ubicació enviada per l'usuari
 ```
+
+A més, si l'usuari introdueix comandes amb valors incorrectes, és a dir, que no són valids s'envia un missatge informant del problema.
     
 Finalment, es guarda en un fitxer tipus *.txt* el token pr poder modificar i configurar el bot i s'inicialitza l'updater i el dispatcher. S'ha acabat vinculant les comandes amb les funcions que han d'invocar cada una de les comandes i s'engega el bot.
     
 
 ## Informació addicional
-En aquest projecte les dades han estat extretes dels fitxers de dades els quals es poden trobar a la carpeta de *dades*.
+Totes les dades utilitzades per a la realització del bot, han estat extretes dels fitxers de dades els quals es poden trobar adjunts al projecte.
 
 En cas que l'usuari es trobi fora de Barcelona i enviï la seva ubicació real, es crearà una aresta fins al node mes proper que sí estigui inclòs al graf de la ciutat de Barcelona i d'allà ja farà el camí correcte.
     
