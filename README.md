@@ -69,7 +69,7 @@ La cerca difusa, ens permetrà trobar resultats semblants a les cerques introdui
 La múltiple ens permetrà fer cerques que continguin més d'una paraula.
     
 ### Metro
-El mòdul `metro.py`recull la definició de les següents classes; Station, Access, Edge.
+El mòdul `metro.py` recull la definició de les següents classes; Station, Access, Edge.
 ```python3
 @dataclass
 class Station:
@@ -132,7 +132,18 @@ def get_metro_graph() -> MetroGraph: ...
 ```
 
 ### City
+El mòdul `city.py` recull la definició dels següents tipus:
+```python3
+CityGraph: TypeAlias = nx.Graph  # graf no dirigit de networkx
+OsmnxGraph: TypeAlias = nx.MultiDiGraph  **#especif**
+Coord: TypeAlias = Tuple[float, float]  # (latitude, longitude)
+NodeID: TypeAlias = Union[int, str]
+Path: TypeAlias = List[NodeID]
+```
 
+L'objectiu d'aquest mòdul és fusionar dos grafs, el graf del metro de Barcelona que hem creat amb el mòdul `metro.py` i el graf dels carrers de la ciutat de Barcelona, aquest no el creem nosaltres sinó que utilitzem l'`OsmnxGraph`, un *MultiDiGraph* de `networkx`, per tal d'aconseguir-lo (que en el nostre cas, donada una ciutat, és capaç de crear el graf dels carrers d'aquesta, ja que és el que nosaltres volem).
+    
+Per a la creació i mostra el graf dels carrers de Barcelona, s'han implementat diverses funcions on es comença creant aquest graf com s'ha mencionat previament, amb l'ajuda del mòdul `osmnx`
 
 ## Fonts d'info??
 
