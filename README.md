@@ -46,9 +46,95 @@ Per inicialitzar el bot haurà d'introduir la comanda `/start`, a més podrà ob
 ## Requeriments
 Per tal de poder utilitzar sense cap problema el bot implementat, caldrà instal·lar les llibreries adjuntes en el fitxer `requirements.txt`.
 
-##Funcionalitat moduls??/estructura proj
+## Funcionalitat dels moduls
+### Restaurants
+El mòdul `restaurants.py` recull la definició de la classe Restaurant amb tots els atributs que necessitarem durant tot el projecte.
+
+```python3
+@dataclass
+class Restaurant: ...
     
-##Fonts d'info??
+Restaurants: TypeAlias = List[Restaurant]
+```
+
+També és l'encarregat de llegir totes les dades necessàries del fitxer **restaurants.csv** (adjunt dins la carpeta *dades*) i assignar cada atribut la columna del fitxer que li pertoca. També trobem la implementació dels diferents tipus de cerques (multiple i difusa) per tal de que quan l'usuari busqui un restaurant, el bot sigui capaç de retornar-li una llista que la satisfaci.
+    
+```python3
+def find_restaurants(query: str, restaurants: Restaurants) -> Restaurants: ...
+def get_results_by_fuzzysearch(query: str, restaurants: Restaurants,
+                               satisfying_query: Restaurants) -> Restaurants: ...
+def find_multiple(query: List[str], restaurants: Restaurants) -> Restaurants: ...
+```
+La cerca difusa, ens permetrà trobar resultats semblants a les cerques introduides, és a dir, mitjançant un cert ratio (i en funció d'aquest aplicarà la distància de Levenshtein) decidirà si el resultat trobat per la cerca és un bon resultat o no. 
+La múltiple ens permetrà fer cerques que continguin més d'una paraula.
+    
+### Metro
+El mòdul `metro.py`recull la definició de les següents classes; Station, Access, Edge.
+```python3
+@dataclass
+class Station:
+    ...
+
+@dataclass
+class Access:
+    ...
+
+@dataclass
+class Edge:
+    ...
+
+Point: TypeAlias = Tuple[float, float]  # punt sobre el pla de coordenades de Barcelona
+MetroGraph: TypeAlias = nx.Graph    
+Stations: TypeAlias = List[Station]
+Accesses: TypeAlias = List[Access]
+``` 
+L'objectiu d'aquest mòdul és crear el graf de la xarxa de metro de Barcelona. Per poder aconseguir-ho primer s'ha implementat una funció per obtenir les dades necessàries del fitxer **estacions.csv** i **accessos.csv** (també adjunts a la carpeta *dades*) i assignar cada atribut la columna del fitxer que li pertoca. 
+    
+```python3
+def read_stations() -> Stations: ...
+def read_accesses() -> Accesses: ...
+```     
+Per tal de poder afegir els nodes i les arestes al graf del metro, s'han implementat les següents funcions que afegeixen els nodes i les arestes de les estacions, els nodes i arestes dels accessos i les arestes de transbord. Aquesta última tracta les atrestes de tipus "Enllaç".
+    
+En aques procés d'afegir tota aquesta informació alhora també ja estem obtenint i guardant dades i informació que ens serà útil per poder continuar amb la realització del projecte, com per exemple el color quu han de tenir les arestes segons de quin tipus siguin o per exemple la distància entre dues estacions, entre d'altres. 
+
+```python3
+def add_nodes_and_edges_stations(station1: Station, station2: Station,
+                                 metro_graph: MetroGraph) -> None: ...
+def add_edges_accesses(
+        qty_stations: int, all_stations: Stations, all_accesses: Accesses,
+        metro_graph: MetroGraph) -> None: ...
+def add_nodes_accesses(all_accesses: Accesses,
+                       metro_graph: MetroGraph) -> None: ...
+def add_transbording_edges(all_stations: Stations,
+                           metro_graph: MetroGraph) -> None: ...
+```
+També han estat implementades funcions auxiliars amb les quals s'obtindran les coordenades x,y d'un punt donat i la distància entre dos punts point1 i point2 mitjançant "haversine".
+    
+```python3
+def get_coordinates(info: str) -> Point: ...
+def get_distance(point1: Point, point2: Point) -> float: ...
+```
+
+En quant a la presentació del graf del metro de Barcelona, han estat implementades diverses funcions les quals ens permeten imprimir un graf més senzill que només ens mostra nodes tots blaus i arestes totes negres. Després, afegint els nodes i les arestes del graf (i fent ús de la informació que contenen aquests) s'aconsegueix que aquest s'imprimeixi ja amb les arestes del color corresponent, sobre del mapa de la ciutat de Barcelona amb l'ajuda d'StaticMap.
+    
+```python3
+def show(Metro_Graph: MetroGraph) -> None: ... # graf "senzill" amb les arestes negres i els nodes blaus
+def plot(g: MetroGraph) -> None: ... # desa el mapa de la ciutat com a imatge
+def add_lines(m: StaticMap, g: MetroGraph) -> StaticMap: ... # afegeix les arestes del graf al StaticMap
+def add_nodes(m: StaticMap, g: MetroGraph) -> StaticMap: ...  # afegeix els nodes del graf al StaticMap 
+```
+
+Per a la creació del graf, només s'ha implementat una funció que retorna el graf del metro de Barcelona amb la informació dels dos arxius llegits anteriorment.
+    
+```python3
+def get_metro_graph() -> MetroGraph: ...
+```
+
+### City
+
+
+## Fonts d'info??
 
 
 
