@@ -141,9 +141,33 @@ NodeID: TypeAlias = Union[int, str]
 Path: TypeAlias = List[NodeID]
 ```
 
-L'objectiu d'aquest mòdul és fusionar dos grafs, el graf del metro de Barcelona que hem creat amb el mòdul `metro.py` i el graf dels carrers de la ciutat de Barcelona, aquest no el creem nosaltres sinó que utilitzem l'`OsmnxGraph`, un *MultiDiGraph* de `networkx`, per tal d'aconseguir-lo (que en el nostre cas, donada una ciutat, és capaç de crear el graf dels carrers d'aquesta, ja que és el que nosaltres volem).
+La finalitat d'aquest mòdul és fusionar dos grafs, el graf del metro de Barcelona que hem creat amb el mòdul `metro.py` i el graf dels carrers de la ciutat de Barcelona, aquest no el creem nosaltres sinó que utilitzem l'OsmnxGraph com un *MultiDiGraph* de `networkx`, per tal d'aconseguir-lo (que en el nostre cas, donada una ciutat, és capaç de crear el graf dels carrers d'aquesta, ja que és el que nosaltres volem).
     
-Per a la creació i mostra el graf dels carrers de Barcelona, s'han implementat diverses funcions on es comença creant aquest graf com s'ha mencionat previament, amb l'ajuda del mòdul `osmnx`
+Per a la creació i mostra el graf dels carrers de Barcelona (*OsmnxGraph*), s'han implementat diverses funcions on es comença creant aquest graf com s'ha mencionat prèviament, amb l'ajuda del mòdul `osmnx` seguidament el guardem en un fitxer i finalment es retorna el graf guardat.
+
+```python3
+def get_osmnx_graph() -> OsmnxGraph: ... # retorna el graf dels carrers
+def save_osmnx_graph(g: OsmnxGraph, filename: str) -> None: ... # guarda el graf
+def load_osmnx_graph(filename: str) -> OsmnxGraph: ...  # retorna el graf guardat
+```
+
+Per a la creació i mostra del CitiGraph, s'afegirà el graf del metro *MetroGraph* i el graf dels carrers de la ciutat *StreetGraph*, a més també s'observa que cal enllaçar els accessos del metro amb el node més proper del *StreetGraph*, per tant s'implementa una altra funció amb aquest fi. A més també cal saber les coordenades dels accessos, ja que prèviament s'havien definit com y, x i ara les necessitem com x, y. Finalment construim el graf de la ciutat fent crides a cadascuna de les funcions definides anteriorment. També s'implementa una funció que estableix les velocitats mitjanes a la qual una persona camina i la del metro.
+
+```python3
+def get_travel_time(type: str, distance: float) -> float: ... # establir velocitats
+def add_Metro_Graph(City_Graph: CityGraph, Metro_Graph: MetroGraph) -> None: ... # afegir el graf del metro
+def add_Street_Graph(City_Graph: CityGraph, Street_Graph: OsmnxGraph) -> None: ... # afegir el graf dels carrers
+def get_acces_coords(Metro_Graph: MetroGraph, y: List, x: List,
+                     access_nodes: List) -> None: ... # modifica les coordenades per tal de tenir x, y
+def link_Street_with_Access(City_Graph: CityGraph, Street_Graph: OsmnxGraph,
+                            Metro_Graph: MetroGraph) -> None: ... # enllaç d'accessos i node més proper del StreetGraph
+def build_city_graph(Street_Graph: OsmnxGraph,
+                     Metro_Graph: MetroGraph) -> CityGraph: ... # fusio dels dos grafs
+```
+
+    
+
+
 
 ## Fonts d'info??
 
