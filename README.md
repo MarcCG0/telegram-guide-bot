@@ -151,7 +151,7 @@ def save_osmnx_graph(g: OsmnxGraph, filename: str) -> None: ... # guarda el graf
 def load_osmnx_graph(filename: str) -> OsmnxGraph: ...  # retorna el graf guardat
 ```
 
-Per a la creació i mostra del CitiGraph, s'afegirà el graf del metro *MetroGraph* i el graf dels carrers de la ciutat *StreetGraph*, a més també s'observa que cal enllaçar els accessos del metro amb el node més proper del *StreetGraph*, per tant s'implementa una altra funció amb aquest fi. A més també cal saber les coordenades dels accessos, ja que prèviament s'havien definit com y, x i ara les necessitem com x, y. Finalment construim el graf de la ciutat fent crides a cadascuna de les funcions definides anteriorment. També s'implementa una funció que estableix les velocitats mitjanes a la qual una persona camina i la del metro.
+Per a la creació i mostra del *CityGraph*, s'afegirà el graf del metro *MetroGraph* i el graf dels carrers de la ciutat *StreetGraph*, a més també s'observa que cal enllaçar els accessos del metro amb el node més proper del *StreetGraph*, per tant s'implementa una altra funció amb aquest fi. A més també cal saber les coordenades dels accessos, ja que prèviament s'havien definit com y, x i ara les necessitem com x, y. Finalment construim el graf de la ciutat fent crides a cadascuna de les funcions definides anteriorment. També s'implementa una funció que estableix les velocitats mitjanes a la qual una persona camina i la del metro.
 
 ```python3
 def get_travel_time(type: str, distance: float) -> float: ... # establir velocitats
@@ -165,7 +165,23 @@ def build_city_graph(Street_Graph: OsmnxGraph,
                      Metro_Graph: MetroGraph) -> CityGraph: ... # fusio dels dos grafs
 ```
 
-    
+Per poder guardar i obtenir el *CityGraph*, s'ha fet us de funcions similars a les implementades per a la creació i mostra de l'*OsmnxGraph*, es comença creant l'*StreetGraph*, cridant les diferents funcions que s'han implementat abans. Després el guardem en un fitxer i finalment retornem el graf gurdat en el fitxer.
+
+```python3
+def get_city_graph() -> CityGraph: ...
+def save_city_graph(City_Graph: CityGraph, filename: str) -> None: ...
+def load_city_graph(filename: str) -> CityGraph: ...
+```
+
+Per mostrar-lo, s'ha seguit una metodologia semblant a el que s'ha fet per la presentació del graf del metro. S'han implementat varies funcions per tal d'aconseguir dibuixar el *CityGraph* per pantalla i després es millora aquesta mostra desant aquest graf sobre el mapa de Barcelona, gràcies a l'ajuda de l'StaticMap. Per poder aconseguir mostrar-lo sobre la imatge del mapa de Barcelona, hem d'afegir els nodes i les arestes del graf de la ciutat d'aquest sobre el mapa.
+
+```python3
+def show_city(City_Graph: CityGraph) -> None: ...
+def plot_city(g: CityGraph, filename: str) -> None: ... 
+def add_city_nodes(m: StaticMap, g: CityGraph) -> StaticMap: ... 
+def add_city_lines(m: StaticMap, g: CityGraph) -> StaticMap: ... 
+```
+
 
 
 
