@@ -165,7 +165,7 @@ def build_city_graph(Street_Graph: OsmnxGraph,
                      Metro_Graph: MetroGraph) -> CityGraph: ... # fusio dels dos grafs
 ```
 
-Per poder guardar i obtenir el *CityGraph*, s'ha fet us de funcions similars a les implementades per a la creació i mostra de l'*OsmnxGraph*, es comença creant l'*StreetGraph*, cridant les diferents funcions que s'han implementat abans. Després el guardem en un fitxer i finalment retornem el graf gurdat en el fitxer.
+Per poder guardar i obtenir el *CityGraph*, s'ha fet us de funcions similars a les implementades per a la creació i mostra de l'*OsmnxGraph*, es comença creant l'*StreetGraph*, cridant les diferents funcions que s'han implementat abans. Després ees guarda en un fitxer i finalment retorna el graf gurdat en el fitxer.
 
 ```python3
 def get_city_graph() -> CityGraph: ...
@@ -182,7 +182,57 @@ def add_city_nodes(m: StaticMap, g: CityGraph) -> StaticMap: ...
 def add_city_lines(m: StaticMap, g: CityGraph) -> StaticMap: ... 
 ```
 
+Per tal de poder trobar el camí més ràpid que portarà l'usuari al restaurant desitjat, s'han creat dues funcions. La primera que retorna el camí més rapid donats un destí i un origen i la segona que calcula el temps de durada de la ruta.
+    
+```python3
+def find_path(Street_Graph: OsmnxGraph, City_Graph: CityGraph, src: Coord, dst: Coord) -> Path: ...
+def get_time_path(Path: Path, City_Graph: CityGraph) -> float: ...
+```
 
+Per pintar el camí que l'usuari ha de seguir per arribar al seu destí, s'ha creat una funció que dibuixa el camí sobre el mapa de Barcelona amb ajuda de l'StaticMap i per poder aconseguir-ho s'han afegit els nodes i les arestes del graf sobre el mapa.
+
+```python3
+def plot_path(City_Graph: CityGraph, path: Path, filename: str) -> None: ... # dibuixa el camí
+def add_path_lines(m: StaticMap, g: CityGraph, path: Path) -> StaticMap: ... # afegeix les arestes
+def add_path_nodes(m: StaticMap, g: CityGraph, path: Path) -> StaticMap: ... # afegeix els nodes
+```
+    
+### Bot
+L'objectiu del mòdul `bot.py` és donades unes comandes per part d'un usuari, que aquest sigui capaç d'entendre-les i guii l'usuari al restaurant que desitja indicant-li la ruta més ràpida ja sigui en metro i/o a peu.
+Per poder aconseguir-ho s'han definit diferents funcions. 
+Primer ha d'obtenir el graf de la ciutat. Després s'ha continuat definint funcions per a donar resosta a les comandes introduides per l'usuari.
+    
+```python3
+def start(update, context): ...
+def help(update, context): ...
+def author(update, context): ...
+def find(update, context): ...
+def info(update, context): ...
+def guide(update, context): ...
+def time(update, context): ...
+``` 
+
+I també s'han creat algunes auxiliars per acabar de completar les anteriors.
+
+```python3
+def initialize(update, context): ...
+def indicate_path(path: Path, update, context) -> None: ...
+def where(update, context): ...
+```
+    
+Finalment, es guarda en un fitxer tipus *.txt* el token pr poder modificar i configurar el bot i s'inicialitza l'updater i el dispatcher. S'ha acabat vinculant les comandes amb les funcions que han d'invocar cada una de les comandes i s'engega el bot.
+    
+    
+    
+    
+    
+    
+
+El bot hauria de començar construint el graf de ciutat i la llista de restaurants. A partir d'aquell moment esperarà connexions de diferents usuaris i els ajudarà a trobar un restaurant a través de les cerques i els ensenyarà a arribar-hi des de la seva posició actual tot calculant la ruta òptima utilitzant desplaçaments en metro i a peu. Totes les comandes han de funcionar per a diferents usuaris alhora (i les peticions de diferents usuaris no s'han de barrejar!).
+
+Per utilitzar el bot, els usuaris han de compartir-li la seva localització. D'aquesta forma, podrà guiar-los adequadament. Si no s'ha compartit la localització, algunes de les comandes hauran d'assenyalar l'error.
+
+Opcionalment, el bot també pot incloure alguna comanda per definir (i tenir en compte) el tipus d'accessibilitat que l'usuari requereix. 
 
 
 ## Fonts d'info??
