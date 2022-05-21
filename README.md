@@ -45,7 +45,7 @@ Per inicialitzar el bot haurà d'introduir la comanda `/start`, a més podrà ob
 
 `/info <number>` Mostra la informació del restaurant especificat amb el número de la llista anterior
 
-`/guide <number>` Mostra el camí més ràpid des d'on es troba l'usuari fins al restaurant demanat (a través del número amb el que s'identifica a la llista anterior)
+`/guide <number>` Mostra el camí més ràpid des d'on es troba l'usuari fins al restaurant demanat (a través del número amb el que s'identifica a la llista anterior) i mostra unes instruccions per facilitar el camí a l'usuari
 
 `/travel_time` Diu el temps que es trigarà a fer la última ruta que s'ha fet amb */guide <number>*
 
