@@ -258,7 +258,7 @@ Totes les dades utilitzades per a la realització del bot, han estat extretes de
 
 Per instalar el packet fuzzywuzzy: 
 ```
-pip3 install fuzzywuzzy i pip3 install fuzzywuzzy[speedup] 
+pip3 install fuzzywuzzy  
 ```
 Source: https://pypi.org/project/fuzzywuzzy/
 
