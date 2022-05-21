@@ -239,6 +239,8 @@ A més, si l'usuari introdueix comandes amb valors incorrectes, és a dir, que n
 Finalment, es guarda en un fitxer tipus *.txt* el token pr poder modificar i configurar el bot i s'inicialitza l'updater i el dispatcher. S'ha acabat vinculant les comandes amb les funcions que han d'invocar cada una de les comandes i s'engega el bot.
     
 ### Resultat final del camí
+Mostra el camí més ràpid que l'usuari ha de seguir si està situat al CC La Maquinista per poder arribar al Restaurant Domino's Pizza de la Meridiana.
+
 ![path.png](path.png)
     
 
