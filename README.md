@@ -59,13 +59,18 @@ class Restaurant: ...
 Restaurants: TypeAlias = List[Restaurant]
 ```
 
-També és l'encarregat de llegir totes les dades necessàries del fitxer **restaurants.csv** i assignar cada atribut la columna del fitxer que li pertoca. També trobem la implementació dels diferents tipus de cerques (multiple i difusa) per tal de que quan l'usuari busqui un restaurant, el bot sigui capaç de retornar-li una llista que la satisfaci.
+També és l'encarregat de llegir totes les dades necessàries del fitxer **restaurants.csv** i assignar cada atribut la columna del fitxer que li pertoca. 
     
 ```python3
+def read_restaurants() -> Restaurants: ...
+```  
+També trobem la implementació dels diferents tipus de cerques (multiple i difusa) per tal de que quan l'usuari busqui un restaurant, el bot sigui capaç de retornar-li una llista que la satisfaci.
+    
+```python3
+def get_dictionary(restaurants: Restaurants) -> Dict[str, Restaurant]: ...
+def find_matching_restaurants(list_query: List,
+                              restaurants: Restaurants) -> Restaurants: ...
 def find_restaurants(query: str, restaurants: Restaurants) -> Restaurants: ...
-def get_results_by_fuzzysearch(query: str, restaurants: Restaurants,
-                               satisfying_query: Restaurants) -> Restaurants: ...
-def find_multiple(query: List[str], restaurants: Restaurants) -> Restaurants: ...
 ```
 La cerca difusa, ens permetrà trobar resultats semblants a les cerques introduides, és a dir, mitjançant un cert ratio (i en funció d'aquest aplicarà la distància de Levenshtein) decidirà si el resultat trobat per la cerca és un bon resultat o no. 
 La múltiple ens permetrà fer cerques que continguin més d'una paraula.
@@ -100,6 +105,8 @@ Per tal de poder afegir els nodes i les arestes al graf del metro, s'han impleme
     
 En aques procés d'afegir tota aquesta informació alhora també ja estem obtenint i guardant dades i informació que ens serà útil per poder continuar amb la realització del projecte, com per exemple el color quu han de tenir les arestes segons de quin tipus siguin o per exemple la distància entre dues estacions, entre d'altres. 
 
+Nota: Sempre hi haurà un que estarà ja afegit (menys la primera crida), però ho fem d'aquesta manera per afegir totes les arestes correctament
+
 ```python3
 def add_nodes_and_edges_stations(station1: Station, station2: Station,
                                  metro_graph: MetroGraph) -> None: ...
@@ -108,14 +115,14 @@ def add_edges_accesses(
         metro_graph: MetroGraph) -> None: ...
 def add_nodes_accesses(all_accesses: Accesses,
                        metro_graph: MetroGraph) -> None: ...
-def add_transbording_edges(all_stations: Stations,
-                           metro_graph: MetroGraph) -> None: ...
+def add_link_edges(all_stations: Stations,
+                   metro_graph: MetroGraph) -> None: ...
 ```
 També han estat implementades funcions auxiliars amb les quals s'obtindran les coordenades x,y d'un punt donat i la distància entre dos punts point1 i point2 mitjançant "haversine".
     
 ```python3
 def get_coordinates(info: str) -> Point: ...
-def get_distance(point1: Point, point2: Point) -> float: ...
+def getdistance(point1: Point, point2: Point) -> float: ...
 ```
 
 En quant a la presentació del graf del metro de Barcelona, han estat implementades diverses funcions les quals ens permeten imprimir un graf més senzill que només ens mostra nodes tots blaus i arestes totes negres. Després, afegint els nodes i les arestes del graf (i fent ús de la informació que contenen aquests) s'aconsegueix que aquest s'imprimeixi ja amb les arestes del color corresponent, sobre del mapa de la ciutat de Barcelona amb l'ajuda d'StaticMap.
@@ -137,11 +144,20 @@ def get_metro_graph() -> MetroGraph: ...
 El mòdul `city.py` recull la definició dels següents tipus:
 ```python3
 CityGraph: TypeAlias = nx.Graph  # graf no dirigit de networkx
-OsmnxGraph: TypeAlias = nx.MultiDiGraph  **#especif**
+OsmnxGraph: TypeAlias = nx.MultiDiGraph  # MultiDiGraph: graf dirig multiArc (possiles arestes repetides entre els mateixos parells de nodes)
 Coord: TypeAlias = Tuple[float, float]  # (latitude, longitude)
 NodeID: TypeAlias = Union[int, str]
 Path: TypeAlias = List[NodeID]
 ```
+
+Els **nodes** del *CityGraph* estaran formats pels següents atributs:        
+en cas que el node sigui de tipus access: (node, tipus (de node o aresta), nom, coordenades)                 
+en la resta de casos: (node, tipus (de node o aresta), nom, nom de linia, coordenades)   
+**tipus de Nodes**: Street, Station, Access; per trobar el path també trobem Src i Dst                                                       
+                                                                        
+Les **arestes** del *CityGraph* estaran formades pels següents atributs: (edge[0], edge[1], time, attr)                                     
+on edge[0], edge[1] representa on comença i acaba l'aresta; time = la velocitat a la que anirà l'usuari si travessa l'Aresta i attr = tipus d'aresta, la distancia i el color                     
+**tipus d'Edges**: Enllaç, Tram, Acces, Carrer                         
 
 La finalitat d'aquest mòdul és fusionar dos grafs, el graf del metro de Barcelona que hem creat amb el mòdul `metro.py` i el graf dels carrers de la ciutat de Barcelona, aquest no el creem nosaltres sinó que utilitzem l'OsmnxGraph com un *MultiDiGraph* de `networkx`, per tal d'aconseguir-lo (que en el nostre cas, donada una ciutat, és capaç de crear el graf dels carrers d'aquesta, ja que és el que nosaltres volem).
     
@@ -153,26 +169,22 @@ def save_osmnx_graph(g: OsmnxGraph, filename: str) -> None: ... # guarda el graf
 def load_osmnx_graph(filename: str) -> OsmnxGraph: ...  # retorna el graf guardat
 ```
 
-Per a la creació i mostra del *CityGraph*, s'afegirà el graf del metro *MetroGraph* i el graf dels carrers de la ciutat *StreetGraph*, a més també s'observa que cal enllaçar els accessos del metro amb el node més proper del *StreetGraph*, per tant s'implementa una altra funció amb aquest fi. A més també cal saber les coordenades dels accessos, ja que prèviament s'havien definit com y, x i ara les necessitem com x, y. Finalment construim el graf de la ciutat fent crides a cadascuna de les funcions definides anteriorment. També s'implementa una funció que estableix les velocitats mitjanes a la qual una persona camina i la del metro.
+Per a afegir nodes i arestes del *CityGraph*, s'afegirà el graf del metro *MetroGraph* i el graf dels carrers de la ciutat *StreetGraph*, a més també s'observa que cal enllaçar els accessos del metro amb el node més proper del *StreetGraph*, per tant s'implementa una altra funció amb aquest fi. A més també cal saber les coordenades dels accessos, ja que prèviament s'havien definit com y, x i ara les necessitem com x, y. 
 
 ```python3
-def get_travel_time(type: str, distance: float) -> float: ... # establir velocitats
 def add_Metro_Graph(City_Graph: CityGraph, Metro_Graph: MetroGraph) -> None: ... # afegir el graf del metro
 def add_Street_Graph(City_Graph: CityGraph, Street_Graph: OsmnxGraph) -> None: ... # afegir el graf dels carrers
 def get_acces_coords(Metro_Graph: MetroGraph, y: List, x: List,
                      access_nodes: List) -> None: ... # modifica les coordenades per tal de tenir x, y
 def link_Street_with_Access(City_Graph: CityGraph, Street_Graph: OsmnxGraph,
                             Metro_Graph: MetroGraph) -> None: ... # enllaç d'accessos i node més proper del StreetGraph
+```
+    
+Finalment construim el graf de la ciutat fent crides a cadascuna de les funcions definides anteriorment.
+    
+```python3
 def build_city_graph(Street_Graph: OsmnxGraph,
                      Metro_Graph: MetroGraph) -> CityGraph: ... # fusio dels dos grafs
-```
-
-Per poder guardar i obtenir el *CityGraph*, s'ha fet us de funcions similars a les implementades per a la creació i mostra de l'*OsmnxGraph*, es comença creant l'*StreetGraph*, cridant les diferents funcions que s'han implementat abans per crear la fusió entre el graf del metro i el dels carrers de Barcelona. Després es guarda en un fitxer i finalment retorna el graf gurdat en el fitxer.
-
-```python3
-def get_city_graph() -> CityGraph: ... # retorna la fusió dels dos grafs
-def save_city_graph(City_Graph: CityGraph, filename: str) -> None: ... # desa el CityGraph a l'arxiu filename
-def load_city_graph(filename: str) -> CityGraph: ... # Retorna el graf guardat al fitxer filename
 ```
 
 Per mostrar-lo, s'ha seguit una metodologia semblant a el que s'ha fet per la presentació del graf del metro. S'han implementat varies funcions per tal d'aconseguir dibuixar el *CityGraph* per pantalla i després es millora aquesta mostra desant aquest graf sobre el mapa de Barcelona, gràcies a l'ajuda de l'StaticMap. Per poder aconseguir mostrar-lo sobre la imatge del mapa de Barcelona, hem d'afegir els nodes i les arestes del graf de la ciutat d'aquest sobre el mapa.
@@ -184,11 +196,12 @@ def add_city_nodes(m: StaticMap, g: CityGraph) -> StaticMap: ... # afegeix els n
 def add_city_lines(m: StaticMap, g: CityGraph) -> StaticMap: ... # afegeix les arestes del graf a l'StaticMap
 ```
 
-Per tal de poder trobar el camí més ràpid que portarà l'usuari al restaurant desitjat, s'han creat dues funcions. La primera que retorna el camí més rapid donats un destí i un origen i la segona que calcula el temps de durada de la ruta.
+Per tal de poder trobar el camí més ràpid que portarà l'usuari al restaurant desitjat, s'han creat dues funcions. La primera que retorna el camí més rapid donats un destí i un origen i la segona que calcula el temps de durada de la ruta.  També s'implementa una funció que estableix les velocitats mitjanes a la qual una persona camina i la del metro.
     
 ```python3
 def find_path(Street_Graph: OsmnxGraph, City_Graph: CityGraph, src: Coord, dst: Coord) -> Path: ...
 def get_time_path(Path: Path, City_Graph: CityGraph) -> float: ...
+def get_travel_time(type: str, distance: float) -> float: ... # establir velocitats
 ```
 
 Per pintar el camí que l'usuari ha de seguir per arribar al seu destí, s'ha creat una funció que dibuixa el camí sobre el mapa de Barcelona amb ajuda de l'StaticMap i per poder aconseguir-ho s'han afegit els nodes i les arestes del graf sobre el mapa.
@@ -230,6 +243,12 @@ Finalment, es guarda en un fitxer tipus *.txt* el token pr poder modificar i con
 
 ## Informació addicional
 Totes les dades utilitzades per a la realització del bot, han estat extretes dels fitxers de dades els quals es poden trobar adjunts al projecte.
+
+Per instalar el packet fuzzywuzzy: 
+```
+pip3 install fuzzywuzzy i pip3 install fuzzywuzzy[speedup] 
+```
+Source: https://pypi.org/project/fuzzywuzzy/
 
 En cas que l'usuari es trobi fora de Barcelona i enviï la seva ubicació real, es crearà una aresta fins al node mes proper que sí estigui inclòs al graf de la ciutat de Barcelona i d'allà ja farà el camí correcte.
     
