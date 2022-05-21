@@ -8,7 +8,7 @@ Tria restaurant i vés-hi en metro 🍕 🚇
 
 El projecte consisteix en un bot de Telegram® desenvolupat amb Python que té com a objectiu guiar l'usuari fins al restaurant que desitja el més rapid possible ja sigui a peu i/o en metro. Això sí, sempre i quan sigui dins de Barcelona!
 
-<p float="center">
+<p float="left">
   <img src="xat(1).png" width="400" />
   <img src="xat(2).png" width="400" /> 
 </p>
@@ -246,7 +246,10 @@ Finalment, es guarda en un fitxer tipus *.txt* el token pr poder modificar i con
 ### Resultat final del camí
 Mostra el camí més ràpid que l'usuari ha de seguir si està situat al CC La Maquinista per poder arribar al Restaurant Domino's Pizza de la Meridiana.
 
-![path.png](path.png)
+
+<p float="left">
+  <img src="path.png" width="500" />
+</p>
     
 
 ## Informació addicional
