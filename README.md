@@ -10,6 +10,7 @@ El projecte consisteix en un bot de Telegram® desenvolupat amb Python que té c
 
 <p float="left">
   <img src="xat(1).png" width="400" />
+
   <img src="xat(2).png" width="400" /> 
 </p>
 
