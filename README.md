@@ -238,6 +238,9 @@ A més, si l'usuari introdueix comandes amb valors incorrectes, és a dir, que n
     
 Finalment, es guarda en un fitxer tipus *.txt* el token pr poder modificar i configurar el bot i s'inicialitza l'updater i el dispatcher. S'ha acabat vinculant les comandes amb les funcions que han d'invocar cada una de les comandes i s'engega el bot.
     
+### Resultat final del camí
+![path.png](path.png)
+    
 
 ## Informació addicional
 Totes les dades utilitzades per a la realització del bot, han estat extretes dels fitxers de dades els quals es poden trobar adjunts al projecte.
