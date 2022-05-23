@@ -1,16 +1,14 @@
 from dataclasses import dataclass
 from typing import Optional, TextIO, TypeAlias
 from typing import List, Tuple, Dict
-import pandas as pd  #type: ignore
-import easyinput as ei  #type: ignore
+import pandas as pd  # type: ignore
+import easyinput as ei  # type: ignore
 import operator
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
-# Per instalar el packet fuzzywuzzy: pip3 install fuzzywuzzy i pip3 install
-# fuzzywuzzy[speedup], Source: https://pypi.org/project/fuzzywuzzy/
 
 
-Coordinate: TypeAlias = float  # Definim una coordenada com un float.
+Coordinate: TypeAlias = float  # Definim una coordenada com un float
 
 
 @dataclass
@@ -32,12 +30,12 @@ Restaurants: TypeAlias = List[Restaurant]
 # FUNCIÓ DE LECTURA #
 # ----------------- #
 
+
 def read_restaurants() -> Restaurants:
     """A partir de la informació que conté el fitxer csv amb la base de dades
     dels restaurants, retorna un llistat de tots els restaurants
     """
-
-    # Fitxer on es troba tota l'informació referent als Restaurants
+    # Fitxer on es troba tota la informació referent als Restaurants
     f = open('restaurants.csv', 'r')
 
     # Assignem a cada atribut el nom de la columna que li pertoca en el fitxer
@@ -50,10 +48,10 @@ def read_restaurants() -> Restaurants:
     x_coord: Coordinate = 'geo_epgs_4326_x'
     y_coord: Coordinate = 'geo_epgs_4326_y'
 
-    # DataFrame que conté tota la informació de les columnes que ens interesen
-    df = pd.read_csv(f, usecols=[name, street_name, street_number, neighbourhood,
-                                 district, phone,
-                                 x_coord, y_coord])
+    # DataFrame que conté la informació de les columnes que ens interessen
+    df = pd.read_csv(f, usecols=[name, street_name, street_number,
+                                 neighbourhood, district, phone, x_coord,
+                                 y_coord])
 
     restaurants: List[Restaurant] = []
 
@@ -76,52 +74,68 @@ def read_restaurants() -> Restaurants:
 # FUNCIONS DE CERCA #
 # ----------------- #
 
+
 def get_dictionary(restaurants: Restaurants) -> Dict[str, Restaurant]:
     """ Retorna un diccionari de la forma {nom del restaurant:
-    instància de la classe d'aquell restaurant} per a tot el llistat de restaurants. """
-    dict : Dict[string, Restaurant] = {}
+    instància de la classe d'aquell restaurant} per a tot el llistat de
+    restaurants
+    """
+    dict: Dict[string, Restaurant] = {}
     for restaurant in restaurants:
         dict[restaurant.name] = restaurant
+
     return dict
 
 
-def find_matching_restaurants(list_query: List, restaurants: Restaurants) -> Restaurants:
+def find_matching_restaurants(list_query: List,
+                              restaurants: Restaurants) -> Restaurants:
     """ Donada una cerca, multiple o única, la duu a terme tot utilitzant
-    la cerca difusa (Distància de levenshtein) """
-
-    #Inicialitzem
+    la cerca difusa (Distància de levenshtein)
+    """
+    # Inicialitzem la llista i el diccionari buits
     matching_with_query: Restaurants = []
-    dict_appearances : Dict[string, int] = {}
+    dict_appearances: Dict[string, int] = {}
 
-    #Recorrem tots els restaurants i els hi assignem un grau de "matching" respecte la cerca efectuada per l'usuari
+    # Recorrem restaurants i assignem un grau de "matching" respecte la cerca
+    # efectuada per l'usuari
     for restaurant in restaurants:
-        attributes = [str(restaurant.name), str(restaurant.street_name), str(restaurant.street_number), str(restaurant.district), str(restaurant.neighbourhood)]
+        attributes = [str(restaurant.name), str(restaurant.street_name),
+                      str(restaurant.street_number), str(restaurant.district),
+                      str(restaurant.neighbourhood)]
         for query in list_query:
             for attribute in attributes:
                 for string in attribute.split():
-                    ratio = fuzz.ratio(query.lower(), string.lower())
-                    if ratio > 85 or (len(query) > 2 and query.lower() in string.lower()):
+                    ratio: int = fuzz.ratio(query.lower(), string.lower())
+                    if (ratio > 85 or (len(query) > 2 and query.lower() in
+                                       string.lower())):
                         if restaurant.name in dict_appearances:
                             dict_appearances[restaurant.name] += 1 * ratio
                         else:
                             dict_appearances[restaurant.name] = 1 * ratio
 
-    # Un cop tenim ja els candidats, els ordenem per importància.
-    name_restaurant_dict: Dict[string, Restaurant] = get_dictionary(restaurants)
+    # Un cop tenim els candidats, els ordenem per importància
+    name_restaurant_dict: Dict[string, Restaurant] = get_dictionary(
+        restaurants)
     matching_restaurants: Restaurants = []
-    for restaurant_name in sorted(dict_appearances.items(), key = operator.itemgetter(1), reverse = True):
-        if len(matching_restaurants)>12 or dict_appearances[restaurant_name[0]] == 0 :
+    for restaurant_name in sorted(dict_appearances.items(),
+                                  key=operator.itemgetter(1), reverse=True):
+        if (len(matching_restaurants) > 12 or
+                dict_appearances[restaurant_name[0]] == 0):
             break
-        elif dict_appearances[restaurant_name[0]]> 55*len(list_query):
-            matching_restaurants.append(name_restaurant_dict[restaurant_name[0]])
+        elif dict_appearances[restaurant_name[0]] > 55 * len(list_query):
+            matching_restaurants.append(
+                name_restaurant_dict[restaurant_name[0]])
 
     return matching_restaurants
 
 
 def find_restaurants(query: str, restaurants: Restaurants) -> Restaurants:
+    """Donada una cerca (str) retorna la llista dels 12 restaurants que millor
+    la satisfan
+    """
     matching_restaurants: Restaurants = []
     # Obtenim una llista amb les paraules de la cerca
-    list_query = query.split(";")
-    # Efectuem la cerca multiple o única fent ús també de la distància de Levenshtein 
+    list_query: List[str] = query.split(";")
+    # Cerca multiple o única fent ús també de la distància de Levenshtein
     matching_restaurants = find_matching_restaurants(list_query, restaurants)
     return matching_restaurants[:12]
