@@ -182,21 +182,21 @@ def build_city_graph(Street_Graph: OsmnxGraph,
     City_Graph.remove_edges_from(nx.selfloop_edges(City_Graph))
 
     # Comprovem l'accessibilitat en funció del que l'usuari hagi demanat
-      if Accessibility:
-          delete_unaccessible_accesses(City_Graph, Metro_Graph)
+    if Accessibility:
+        delete_unaccessible_accesses(City_Graph, Metro_Graph)
 
     return City_Graph
 
+    # ---------------------------------- #
+    # ACCIÓ PER TRACTAR L'ACCESSIBILITAT #
+    # ---------------------------------- #
 
-    # ---------------------------------- #
-    # ACCIÓ PER TRACTAR L'ACCESSIBILITAT
-    # ---------------------------------- #
     def delete_unaccessible_accesses(City_Graph: CityGraph,
                                      Metro_Graph: MetroGraph) -> None:
         """ Elimina els accessos no accessibles del graf de la ciutat """
         for node in Metro_Graph.nodes:
             if (Metro_Graph.nodes[node]["type"] == "Acces" and
-                    Metro_Graph.nodes[node]["accessibilitat"] == False):
+                    Metro_Graph.nodes[node]["accessibilitat"] is False):
                 City_Graph.remove_node(node)
 
 
@@ -268,7 +268,6 @@ def find_path(Street_Graph: OsmnxGraph, City_Graph: CityGraph, src: Coord,
     """ Donat un origen src i un desti dst, retorna el camí Path més ràpid """
     nearest_nodes, dist = ox.distance.nearest_nodes(
         Street_Graph, [src[0], dst[0]], [src[1], dst[1]], return_dist=True)
-
 
     City_Graph.add_node("src_node", type="Src", coordinates=src)
     edge = Edge("Street", dist[0], "#000000")
