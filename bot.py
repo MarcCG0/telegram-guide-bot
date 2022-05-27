@@ -4,12 +4,14 @@ from city import load_osmnx_graph, Path
 from metro import get_metro_graph
 from restaurants import find_restaurants, read_restaurants
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from easyinput import read
 
 
 # ------------------ VARIABLES GLOBALS ------------------- #
 Metro_Graph = get_metro_graph()
 Street_Graph = load_osmnx_graph('barcelona.grf')
-City_Graph = build_city_graph(Street_Graph, Metro_Graph)
+City_Graph = build_city_graph(Street_Graph, Metro_Graph, False)
+City_Graph_Accessible = build_city_graph(Street_Graph, Metro_Graph, True)
 # -------------------------------------------------------- #
 
 # --------------------------------- #
@@ -23,6 +25,29 @@ def initialize(update, context):
     """
     context.user_data['travel_time'] = -1
     context.user_data['desired_restaurants'] = []
+    context.user_data['accessibility'] = False
+    # Inicialment suposem que l'usuari no té preferencia pels accessos.
+
+
+def accessibility(update, context):
+    """ En el cas de que l'usuari ho indiqui, actualitza les preferències
+    d'aquest en vers l'accessibilitat
+    """
+    try:
+        indication: str = context.args[0]
+        assert indication == "SI" or indication == "NO"
+        if indication == "SI":
+            context.user_data['accessibility'] = True
+        else:
+            context.user_data['accessibility'] = False
+
+        info = "Accessibilitat desitjada actualitzada correctament✅ \n"
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=info)
+    except AssertionError:
+        info1 = ("El text inserit al camp <SI/NO>, no és correcte. Per "
+                 "actualitzar l'accessibilitat , introdueix SI o NO\n")
+        context.bot.send_message(chat_id=update.effective_chat.id, text=info1)
 
 
 def start(update, context):
@@ -52,7 +77,11 @@ def help(update, context):
             "restaurants impresa amb la comanda find. Rebràs tant una guia "
             "visual com una guia verbal per facilitar-te la ruta \n"
             "- ⏳ /travel_time mostra el temps de ruta de l'ultima ruta que "
-            "s'ha efectuat amb la comanda /guide <number> \n")
+            "s'ha efectuat amb la comanda /guide <number> \n"
+            "- /accessibility <SI/NO> indica al bot si l'usuari vol que la "
+            "ruta inclogui accessos no accessibles o no. Per exemple: "
+            "/accessibility YES indica al bot que l'usuari vol que la ruta "
+            "només inclogui accessos accessibles")
     context.bot.send_message(chat_id=update.effective_chat.id, text=info)
 
 
@@ -285,6 +314,7 @@ dispatcher.add_handler(CommandHandler('info', info))
 dispatcher.add_handler(MessageHandler(Filters.location, where))
 dispatcher.add_handler(CommandHandler('guide', guide))
 dispatcher.add_handler(CommandHandler('travel_time', time))
+dispatcher.add_handler(CommandHandler('accessibility', accessibility))
 
 # Engegem el bot
 updater.start_polling()
