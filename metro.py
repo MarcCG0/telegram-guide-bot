@@ -28,6 +28,7 @@ class Access:
     name: str          # Nom del accés
     location: Point    # Posició de tipus punt del accés en qüestió
     stationid: str     # Identificador de l'estació associada al accés
+    accessibility : bool  # True indica que és accessible, False, que no ho és
 
 
 @dataclass
@@ -92,16 +93,20 @@ def read_accesses() -> Accesses:
     name: str = 'NOM_ACCES'
     location: str = 'GEOMETRY'
     stationid: str = 'ID_ESTACIO'
+    accessibility: str = 'NOM_TIPUS_ACCESSIBILITAT'
 
     # DataFrame que conté tota la informació de les columnes que ens interesen
-    df = pd.read_csv(f, usecols=[id, name, location, stationid])
+    df = pd.read_csv(f, usecols=[id, name, location, stationid,
+                     accessibility])
 
     Accesses: List[Access] = []
 
     for row in df.itertuples():
         coords: Point = get_coordinates(row.GEOMETRY)
         Current_Access = Access(str(row.ID_ACCES), row.NOM_ACCES,
-                                coords, row.ID_ESTACIO)
+                                coords, row.ID_ESTACIO,
+                                get_accessibility(
+                                    row.NOM_TIPUS_ACCESSIBILITAT))
         Accesses.append(Current_Access)
 
     return Accesses
@@ -170,6 +175,13 @@ def add_nodes(m: StaticMap, g: MetroGraph) -> StaticMap:
 # ------------------------------- #
 # FUNCIONS DE POSICIÓ I DISTÀNCIA #
 # ------------------------------- #
+
+
+def get_accessibility(info : str)-> bool:
+    """ Donat un string de la forma Accessible o No accessible
+    retorna el boolea que el representa """
+    Indicator : str = info.split()[0]
+    return not Indicator == "No"
 
 
 def get_coordinates(info: str) -> Point:
@@ -243,8 +255,7 @@ def add_edges_accesses(
 
                 # Afegim una Aresta de tipus Acces
                 metro_graph.add_edge(
-                    station.id, access.id,
-                    attributes=edge,
+                    station.id, access.id, attributes=edge,
                     coordinates=[station.location, access.location])
             # Si hem trobat un access i l'access d'aquesta iteració ja no ho
             # és no hi ha més (doncs estan ordenats)
@@ -258,7 +269,8 @@ def add_nodes_accesses(all_accesses: Accesses,
     for access in all_accesses:
         # Afegim node de tipus Acces
         metro_graph.add_node(access.id, type="Acces", name=access.name,
-                             coordinates=access.location)
+                             coordinates=access.location,
+                             accessibilitat=access.accessibility)
 
 
 def add_link_edges(all_stations: Stations,
@@ -314,3 +326,4 @@ def get_metro_graph() -> MetroGraph:
     add_link_edges(all_stations, Metro_Graph)
 
     return Metro_Graph
+    
