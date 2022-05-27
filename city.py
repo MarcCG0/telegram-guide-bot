@@ -181,7 +181,23 @@ def build_city_graph(Street_Graph: OsmnxGraph,
     # Eliminem els cicles que ens donava el graf extret d'OSMNX
     City_Graph.remove_edges_from(nx.selfloop_edges(City_Graph))
 
+    # Comprovem l'accessibilitat en funció del que l'usuari hagi demanat
+      if Accessibility:
+          delete_unaccessible_accesses(City_Graph, Metro_Graph)
+
     return City_Graph
+
+
+    # ---------------------------------- #
+    # ACCIÓ PER TRACTAR L'ACCESSIBILITAT
+    # ---------------------------------- #
+    def delete_unaccessible_accesses(City_Graph: CityGraph,
+                                     Metro_Graph: MetroGraph) -> None:
+        """ Elimina els accessos no accessibles del graf de la ciutat """
+        for node in Metro_Graph.nodes:
+            if (Metro_Graph.nodes[node]["type"] == "Acces" and
+                    Metro_Graph.nodes[node]["accessibilitat"] == False):
+                City_Graph.remove_node(node)
 
 
 # ---------------------------------- #
