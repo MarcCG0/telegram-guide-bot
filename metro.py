@@ -28,7 +28,7 @@ class Access:
     name: str          # Nom del accés
     location: Point    # Posició de tipus punt del accés en qüestió
     stationid: str     # Identificador de l'estació associada al accés
-    accessibility : bool  # True indica que és accessible, False, que no ho és
+    accessibility: bool  # True indica que és accessible, False, que no ho és
 
 
 @dataclass
@@ -177,10 +177,10 @@ def add_nodes(m: StaticMap, g: MetroGraph) -> StaticMap:
 # ------------------------------- #
 
 
-def get_accessibility(info : str)-> bool:
+def get_accessibility(info: str) -> bool:
     """ Donat un string de la forma Accessible o No accessible
     retorna el boolea que el representa """
-    Indicator : str = info.split()[0]
+    Indicator: str = info.split()[0]
     return not Indicator == "No"
 
 
@@ -326,4 +326,3 @@ def get_metro_graph() -> MetroGraph:
     add_link_edges(all_stations, Metro_Graph)
 
     return Metro_Graph
-    
