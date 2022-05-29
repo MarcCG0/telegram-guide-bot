@@ -215,13 +215,6 @@ def get_access_coords(Metro_Graph: MetroGraph, y: List, x: List,
 def link_Street_with_Access(City_Graph: CityGraph, Street_Graph: OsmnxGraph,
                             Metro_Graph: MetroGraph) -> None: ... # enllaç d'accessos i node més proper del StreetGraph
 ```
-  
-També s'ha creat una funció que elimina els accessos no accessibles del graf de la ciutat per quan l'usuari vulgui modificar l'accessibilitat.
-  
-```python3
-def delete_unaccessible_accesses(City_Graph: CityGraph,
-                                 Metro_Graph: MetroGraph) -> None: ... # Elimina els accessos no accessibles del graf de la ciutat
-```
  
 Finalment construim el graf de la ciutat fent crides a cadascuna de les funcions definides anteriorment. A més també s'implementa una funció per eliminar aquells nodes i arestes auxiliars que es creen per fer el camí fins el destí demanat per l'usuari.
     
@@ -231,6 +224,13 @@ def build_city_graph(Street_Graph: OsmnxGraph, Metro_Graph: MetroGraph,
 def delete_auxiliary_elements(City_Graph: CityGraph) -> None: ... # Elimina els nodes i arestes auxiliars que creem per fer el camí
 ```
 
+També s'ha creat una funció que elimina els accessos no accessibles del graf de la ciutat per quan l'usuari vulgui modificar l'accessibilitat.
+  
+```python3
+def delete_unaccessible_accesses(City_Graph: CityGraph,
+                                 Metro_Graph: MetroGraph) -> None: ... # Elimina els accessos no accessibles del graf de la ciutat
+```
+  
 Per mostrar-lo, s'ha seguit una metodologia semblant al que s'ha fet per la presentació del graf del metro. S'han implementat varies funcions per tal d'aconseguir dibuixar el *CityGraph* per pantalla. Després es millora aquesta mostra desant aquest graf sobre el mapa de Barcelona, gràcies a l'ajuda de l'StaticMap. Per poder aconseguir mostrar-lo sobre la imatge del mapa de Barcelona, s'han d'afegir els nodes i les arestes del graf de la ciutat sobre el mapa.
 
 ```python3
