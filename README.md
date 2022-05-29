@@ -277,7 +277,7 @@ I també s'han creat algunes auxiliars per acabar de completar les anteriors.
 ```python3
 def initialize(update, context): ... # inicialitza les dades per poder comprovar si s'han efectuat comandes i notificar sobre errors possibles a l'usuari
 def accessibility(update, context): ... # Actualitza l'accessibilitat que vol l'usuari
-def indicate_path(path: Path, update, context) -> None: ... # dona indicacions per a facilitar el camí a l'usuari de forma escrita
+def indicate_path(path: Path, g: CityGraph, update, context) -> None: ... # dona indicacions per a facilitar el camí a l'usuari de forma escrita
 def where(update, context): ... # emmagatzema la ubicació enviada per l'usuari
 ```
 **Nota**: Com que no es té constància dels noms dels carrers de Barcelona, a la funció *indicate_path()* no es podrà indicar per quins carrers cal anar. Per tant aquesta ruta, només inclourà els trams de metro i accessos que cal agafar (incloent línia i indicacions de transbord) i el·lidirà indicacions de canvi de carrer. Per tant la part de la ruta que sigui caminant, no tindrà cap indicació concreta, només una de genèrica. 
