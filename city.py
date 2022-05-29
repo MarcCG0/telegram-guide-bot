@@ -2,7 +2,7 @@ import osmnx as ox  # type: ignore
 from typing import Union  # type: ignore
 import networkx as nx  # type: ignore
 import pickle
-from metro import*   # Canviar el nom dels fitxers.
+from metro import*  
 import os as os
 
 
