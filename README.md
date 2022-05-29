@@ -9,9 +9,9 @@ Tria restaurant i vés-hi en metro 🍕 🚇
 El projecte consisteix en un bot de Telegram® desenvolupat amb Python que té com a objectiu guiar l'usuari fins al restaurant que desitja el més rapid possible ja sigui a peu i/o en metro. Això sí, sempre i quan sigui dins de Barcelona!
 
 <p float="left">
-  <img src="xat(1).png" width="400" />
+  <img src="xat(1).png" width="300" />
 
-  <img src="xat(2).png" width="400" /> 
+  <img src="xat(2).png" width="300" /> 
 </p>
 
 Vídeo que mostra el funcionament del bot:
