@@ -197,8 +197,8 @@ def link_Street_with_Access(City_Graph: CityGraph, Street_Graph: OsmnxGraph,
 Finalment construim el graf de la ciutat fent crides a cadascuna de les funcions definides anteriorment.
     
 ```python3
-def build_city_graph(Street_Graph: OsmnxGraph,
-                     Metro_Graph: MetroGraph) -> CityGraph: ... # fusio dels dos grafs
+def build_city_graph(Street_Graph: OsmnxGraph, Metro_Graph: MetroGraph,
+                     Accessibility: bool) -> CityGraph: ... # fusio dels dos grafs
 ```
 
 Per mostrar-lo, s'ha seguit una metodologia semblant a el que s'ha fet per la presentació del graf del metro. S'han implementat varies funcions per tal d'aconseguir dibuixar el *CityGraph* per pantalla i després es millora aquesta mostra desant aquest graf sobre el mapa de Barcelona, gràcies a l'ajuda de l'StaticMap. Per poder aconseguir mostrar-lo sobre la imatge del mapa de Barcelona, hem d'afegir els nodes i les arestes del graf de la ciutat d'aquest sobre el mapa.
