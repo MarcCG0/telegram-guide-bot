@@ -183,11 +183,13 @@ Path: TypeAlias = List[NodeID]
 Els **nodes** del *CityGraph* estaran formats pels següents atributs:        
 - En cas que el node sigui de tipus access: (id, tipus, nom, coordenades)                 
 - En la resta de casos: (id, tipus, nom, nom de linia, coordenades)   
-**tipus de Nodes**: Street, Station, Access; per trobar el path també es fa ús dels nodes Src i Dst, que se'ls hi ha assignat aquest nou tipus.                                                        
+- **tipus de Nodes**: Street, Station, Access; per trobar el path també es fa ús dels nodes Src i Dst, que se'ls hi ha assignat aquest nou tipus.                                                        
                                                                         
 Les **arestes** del *CityGraph* estaran formades pels següents atributs: (edge[0], edge[1], time, attr)                                     
-on edge[0], edge[1] representa on comença i acaba l'aresta; time = el temps que trigarà l'usuari en recórrer l'aresta en qüestió. I attr serà una instància de la classe Edge que recollirà : tipus, distància i color.                
-**tipus d'Edges**: Link, Railway, Access, Street                         
+- edge[0], edge[1] representa on comença i acaba l'aresta
+- time = el temps que trigarà l'usuari en recórrer l'aresta en qüestió.
+- attr serà una instància de la classe Edge que recollirà: tipus, distància i color.                
+- **tipus d'Edges**: Link, Railway, Access, Street                         
 
 La finalitat d'aquest mòdul és fusionar dos grafs, el graf del metro de Barcelona que s'ha creat amb el mòdul `metro.py` i el graf dels carrers de la ciutat de Barcelona, que s'obté a través del mòdul `osmnx` com un *MultiDiGraph* de `networkx`. Per l'obtenció d'aquest graf, caldrà connexió a internet doncs el mòdul en qüestió el descarrega a través de la xarxa. 
     
