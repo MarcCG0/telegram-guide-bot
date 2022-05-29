@@ -79,7 +79,7 @@ def find_matching_restaurants(list_query: List,
 def find_restaurants(query: str, restaurants: Restaurants) -> Restaurants: ...
 ```
   
-La funció find_matching_restaurants s'ha implementat de tal manera que si es dona una cerca (ja sigui una única paraula o múltiples) retorna una llista "matching_restaurants" amb els restaurants que satisfan la cerca. 
+La funció `find_matching_restaurants` s'ha implementat de tal manera que si es dona una cerca (ja sigui una única paraula o múltiples) retorna una llista "matching_restaurants" amb els restaurants que satisfan la cerca. 
 Aquesta ha estat implementada utilitzant la cerca difusa, i segueix la següent estructura:
 Es recorren tots els restaurants de la llista donada i es guarden els atributs, seguidament es recorre la query donada (que és un string d'una o múltiples paraules) i a més també iterem pels atributs guardats anteriorment. 
 Així, es comprova si es pot satisfer correctament la query introduïda per l'usuari o no. Si hem trobat alguna coincidència que s'ajusta als requisits mínims (comprovem el ratio obtingut mitjançant la cerca difusa i la llargada de la query per comprovar si aquesta esta dins del restaurant que s'esta analitzant) per considerar-la un bon resultat s'afegeix a la llista matching_restaurants i posteriorment aquesta serà ordenada per grau de coincidència. 
