@@ -84,7 +84,7 @@ Aquesta ha estat implementada utilitzant la cerca difusa, i segueix la següent 
 
 Es recorren tots els restaurants de la llista donada i es guarden els atributs, seguidament es recorre la query donada (que és un string d'una o múltiples paraules) i a més també iterem pels atributs guardats anteriorment. 
 
-Així, es comprova si es pot satisfer correctament la query introduïda per l'usuari o no. Si hem trobat alguna coincidència que s'ajusta als requisits mínims (comprovem el ratio obtingut mitjançant la cerca difusa i la llargada de la query per comprovar si aquesta esta dins del restaurant que s'esta analitzant) per considerar-la un bon resultat s'afegeix a la llista matching_restaurants i posteriorment aquesta serà ordenada per grau de coincidència. 
+Així, es comprova si es pot satisfer correctament la query introduïda per l'usuari o no. Si hem trobat alguna coincidència que s'ajusta als requisits mínims (comprovem el ratio obtingut mitjançant la cerca difusa i la llargada de la query per comprovar si aquesta esta dins del restaurant que s'està analitzant) per considerar-la un bon resultat, s'afegeix a la llista matching_restaurants i posteriorment aquesta serà ordenada per grau de coincidència. 
   
 La cerca difusa, ens permetrà trobar resultats semblants a les cerques introduides, és a dir, mitjançant un cert ratio (i en funció d'aquest aplicarà la distància de Levenshtein) decidirà si el resultat trobat per la cerca és un bon resultat o no. 
 
