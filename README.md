@@ -48,7 +48,7 @@ Per inicialitzar el bot haurà d'introduir la comanda `/start`, a més podrà ob
 
 `/travel_time` Diu el temps que es trigarà a fer la última ruta que s'ha fet amb */guide <number>*
 
-`/accessibility` Si retorna YES indica al bot que l'usuari vol que la ruta només inclogui accessos accessibles
+`/accessibility <SI/NO>` indica al bot si l'usuari vol que la ruta inclogui accessos no accessibles o no
 
 ## Requeriments
 Per tal de poder utilitzar sense cap problema el bot implementat, caldrà instal·lar les llibreries adjuntes en el fitxer `requirements.txt`.
