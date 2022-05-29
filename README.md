@@ -4,7 +4,7 @@ Tria restaurant i vés-hi en metro 🍕 🚇
 
 *MetroYourRestaurant*, el bot que et porta en metro al restaurant que tu vols!
 
-video: [![Alt text](https://img.youtube.com/vi/codivideo/0.jpg)](linkdegoogle)
+video: [![Alt text](https://img.youtube.com/vi/SMxTKgAOr_o/0.jpg)](https://youtube.com/shorts/SMxTKgAOr_o?feature=share)
 
 ## Introducció
 
