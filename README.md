@@ -40,7 +40,7 @@ Per inicialitzar el bot haurà d'introduir la comanda `/start`, a més podrà ob
 
 `/author` Retorna els noms dels autors del projecte
 
-`/find <query>` Retorna una llista de màxim 12 restaurants que satisfan la cerca feta per l'usuari
+`/find <query>` Retorna una llista de màxim 12 restaurants que satisfan la cerca feta per l'usuari. En el cas de fer servir cerca multiple amb n paraules, cal fer servir la següent notació: /find <query(1)>;<query(2)>; ... <query(n-1)>;<query(n)>
 
 `/info <number>` Mostra la informació del restaurant especificat amb el número de la llista anterior
 
