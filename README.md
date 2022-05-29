@@ -215,7 +215,12 @@ def get_access_coords(Metro_Graph: MetroGraph, y: List, x: List,
 def link_Street_with_Access(City_Graph: CityGraph, Street_Graph: OsmnxGraph,
                             Metro_Graph: MetroGraph) -> None: ... # enllaç d'accessos i node més proper del StreetGraph
 ```
-    
+També s'ha creat una funció que elimina els accessos no accessibles del graf de la ciutat per quan l'usuari vulgui modificar l'accessibilitat.
+```python3
+def delete_unaccessible_accesses(City_Graph: CityGraph,
+                                 Metro_Graph: MetroGraph) -> None: ... # Elimina els accessos no accessibles del graf de la ciutat
+```
+ 
 Finalment construim el graf de la ciutat fent crides a cadascuna de les funcions definides anteriorment.
     
 ```python3
