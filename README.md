@@ -258,6 +258,8 @@ Finalment, es guarda en un fitxer tipus *.txt* el token pr poder modificar i con
     
 ### Resultat final del camí
 Mostra el camí més ràpid que l'usuari ha de seguir si està situat al CC La Maquinista per poder arribar al Restaurant Domino's Pizza de la Meridiana.
+  
+S'ha decidit utilitzar aquesta ruta de mostra ja que és una ruta llarga i amb trams a peu i en metro.
 
 
 <p float="left">
