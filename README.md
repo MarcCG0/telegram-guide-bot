@@ -49,6 +49,8 @@ Per inicialitzar el bot haurà d'introduir la comanda `/start`, a més podrà ob
 
 `/travel_time` Diu el temps que es trigarà a fer la última ruta que s'ha fet amb */guide <number>*
 
+`/accessibility` si retorna YES indica al bot que l'usuari vol que la ruta només inclogui accessos accessibles
+
 ## Requeriments
 Per tal de poder utilitzar sense cap problema el bot implementat, caldrà instal·lar les llibreries adjuntes en el fitxer `requirements.txt`.
 
@@ -76,8 +78,14 @@ def find_matching_restaurants(list_query: List,
                               restaurants: Restaurants) -> Restaurants: ...
 def find_restaurants(query: str, restaurants: Restaurants) -> Restaurants: ...
 ```
+  
+La funció find_matching_restaurants s'ha implementat de tal manera que si es dona una cerca (ja sigui una única paraula o múltiples) retorna una llista "matching_restaurants" amb els restaurants que satisfan la cerca. 
+Aquesta ha estat implementada utilitzant la cerca difusa, i segueix la següent estructura:
+Es recorren tots els restaurants de la llista donada i es guarden els atributs, seguidament es recorre la query donada (que és un string d'una o múltiples paraules) i a més també iterem pels atributs guardats anteriorment. 
+Així, es comprova si es pot satisfer correctament la query introduïda per l'usuari o no. Si hem trobat alguna coincidència que s'ajusta als requisits mínims (comprovem el ratio obtingut mitjançant la cerca difusa i la llargada de la query per comprovar si aquesta esta dins del restaurant que s'esta analitzant) per considerar-la un bon resultat s'afegeix a la llista matching_restaurants i posteriorment aquesta serà ordenada per grau de coincidència. 
+  
 La cerca difusa, ens permetrà trobar resultats semblants a les cerques introduides, és a dir, mitjançant un cert ratio (i en funció d'aquest aplicarà la distància de Levenshtein) decidirà si el resultat trobat per la cerca és un bon resultat o no. 
-La múltiple ens permetrà fer cerques que continguin més d'una paraula.
+
     
 ### Metro
 El mòdul `metro.py` recull la definició de les següents classes: Station, Access, Edge.
@@ -122,9 +130,10 @@ def add_nodes_accesses(all_accesses: Accesses,
 def add_link_edges(all_stations: Stations,
                    metro_graph: MetroGraph) -> None: ...
 ```
-També han estat implementades funcions auxiliars amb les quals s'obtindran les coordenades x,y d'un punt donat i la distància entre dos punts point1 i point2 mitjançant "haversine".
+També han estat implementades funcions auxiliars amb les quals s'obtindran les coordenades x,y d'un punt donat i la distància entre dos punts point1 i point2 mitjançant "haversine". A més s'ha inclòs una funció que informa a l'usuari si un accés és accessible o no.
     
 ```python3
+def get_accessibility(info: str) -> bool: ...
 def get_coordinates(info: str) -> Point: ...
 def getdistance(point1: Point, point2: Point) -> float: ...
 ```
@@ -235,7 +244,8 @@ def time(update, context): ...
 I també s'han creat algunes auxiliars per acabar de completar les anteriors.
 
 ```python3
-def initialize(update, context): ... # inicialitza les dades per poder comprovar si s'han efectuat  comandes
+def initialize(update, context): ... # inicialitza les dades per poder comprovar si s'han efectuat comandes
+def accessibility(update, context): ... #informa l'usuari si l'accés és accessible
 def indicate_path(path: Path, update, context) -> None: ... # dona indicacions per a facilitar el camí a l'usuari
 def where(update, context): ... # emmagatzema la ubicació enviada per l'usuari
 ```
@@ -254,7 +264,7 @@ Mostra el camí més ràpid que l'usuari ha de seguir si està situat al CC La M
     
 
 ## Informació addicional
-Totes les dades utilitzades per a la realització del bot, han estat extretes dels fitxers de dades els quals es poden trobar adjunts al projecte.
+- Totes les dades utilitzades per a la realització del bot, han estat extretes dels fitxers de dades els quals es poden trobar adjunts al projecte.
 
 Per instalar el packet fuzzywuzzy: 
 ```
@@ -262,7 +272,9 @@ pip3 install fuzzywuzzy
 ```
 Source: https://pypi.org/project/fuzzywuzzy/
 
-En cas que l'usuari es trobi fora de Barcelona i enviï la seva ubicació real, es crearà una aresta fins al node mes proper que sí estigui inclòs al graf de la ciutat de Barcelona i d'allà ja farà el camí correcte.
+- En cas que l'usuari es trobi fora de Barcelona i enviï la seva ubicació real, es crearà una aresta fins al node mes proper que sí estigui inclòs al graf de la ciutat de Barcelona i d'allà ja farà el camí correcte.
+  
+- A l'hora de retornar la llista de restaurants que satisfan la cerca, no només es retornen aquells que la satisfan al 100%, sinó que si es troba algun (en el cas de cerca múltiple) on alguna de totes les paraules introduïdes no es troba, també es retorna, ja que s'ha pensat que tot i que no es comleixin totes les paraules cercades, si el restaurant compleix els requisits mínims establerts és preferible retornar-lo i que l'usuari decideixi si és del seu interès, ja que satisfà gairebé la cerca completa.
     
 ## Autors
 Aquest projecte ha estat creat pel Marc Camps i la Carlota Gozalbo, estudiants del 1r curs del Grau en Ciència i Enginyeria de Dades a la Universitat Politècnica de Catalunya.
