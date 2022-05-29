@@ -118,7 +118,7 @@ Per tal de poder afegir els nodes i les arestes al graf del metro, s'han impleme
     
 En aques procés d'afegir tota aquesta informació alhora també ja estem obtenint i guardant dades i informació que ens serà útil per poder continuar amb la realització del projecte, com per exemple el color quu han de tenir les arestes segons de quin tipus siguin o per exemple la distància entre dues estacions, entre d'altres. 
 
-Nota: Sempre hi haurà un que estarà ja afegit (menys la primera crida), però ho fem d'aquesta manera per afegir totes les arestes correctament
+**Nota**: Sempre hi haurà un que estarà ja afegit (menys la primera crida), però ho fem d'aquesta manera per afegir totes les arestes correctament.
 
 ```python3
 def add_nodes_and_edges_stations(station1: Station, station2: Station,
