@@ -280,5 +280,5 @@ Source: https://pypi.org/project/fuzzywuzzy/
 - A l'hora de retornar la llista de restaurants que satisfan la cerca, no només es retornen aquells que la satisfan al 100%, sinó que si es troba algun (en el cas de cerca múltiple) on alguna de totes les paraules introduïdes no es troba, també es retorna, ja que s'ha pensat que tot i que no es comleixin totes les paraules cercades, si el restaurant compleix els requisits mínims establerts és preferible retornar-lo i que l'usuari decideixi si és del seu interès, ja que satisfà gairebé la cerca completa.
     
 ## Autors
-Aquest projecte ha estat creat pel Marc Camps i la Carlota Gozalbo, estudiants del 1r curs del Grau en Ciència i Enginyeria de Dades a la Universitat Politècnica de Catalunya.
+Aquest projecte ha estat creat per Marc Camps i Carlota Gozalbo, estudiants del 1r curs del Grau en Ciència i Enginyeria de Dades a la Universitat Politècnica de Catalunya.
     
