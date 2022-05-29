@@ -4,8 +4,6 @@ Tria restaurant i vés-hi en metro 🍕 🚇
 
 *MetroYourRestaurant*, el bot que et porta en metro al restaurant que tu vols!
 
-video: [![Alt text](https://img.youtube.com/vi/SMxTKgAOr_o/0.jpg)](https://youtube.com/shorts/SMxTKgAOr_o?feature=share)
-
 ## Introducció
 
 El projecte consisteix en un bot de Telegram® desenvolupat amb Python que té com a objectiu guiar l'usuari fins al restaurant que desitja el més rapid possible ja sigui a peu i/o en metro. Això sí, sempre i quan sigui dins de Barcelona!
@@ -16,6 +14,9 @@ El projecte consisteix en un bot de Telegram® desenvolupat amb Python que té c
   <img src="xat(2).png" width="400" /> 
 </p>
 
+Vídeo que mostra el funcionament del bot:
+
+[![Alt text](https://img.youtube.com/vi/SMxTKgAOr_o/0.jpg)](https://youtube.com/shorts/SMxTKgAOr_o?feature=share)
 
 
 
