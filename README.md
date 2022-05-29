@@ -16,7 +16,6 @@ El projecte consisteix en un bot de Telegram® desenvolupat amb Python que té c
 
 
 
---nosesical------------------------
 
 Per poder dur a terme hem hagut d'usar les següents dades:
 - El mapa dels carrers de Barcelona obtingut d'[Open Street Map](https://www.openstreetmap.org).
@@ -27,7 +26,7 @@ Per poder dur a terme hem hagut d'usar les següents dades:
 
 - La [Llistat dels accessos de Metro de TMB](https://developer.tmb.cat/data/accessos).
 
-------------------------xdf-------------
+
 
 ## Instruccions
 Per tal de poder utilitzar el bot, primer l'usuari haurà de tenir instal·lada l'aplicació Telegram®. Posteriorment, s'haurà de registrar i a l'apartat de **xats** haurà de buscar `MetroYourRestaurant` per poder rebre les indicacions correctes per arribar al restaurant desitjat.
