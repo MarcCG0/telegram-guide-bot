@@ -1,4 +1,4 @@
-# MetroNyan
+# MetroNyam
 
 Tria restaurant i vés-hi en metro 🍕 🚇
 
