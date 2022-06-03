@@ -240,11 +240,15 @@ def add_city_nodes(m: StaticMap, g: CityGraph) -> None: ... # afegeix els nodes 
 def add_city_lines(m: StaticMap, g: CityGraph) -> None: ... # afegeix les arestes del graf a l'StaticMap
 ```
 
-Per tal de poder trobar el camí més ràpid que portarà l'usuari al restaurant desitjat, s'han creat dues funcions. La primera que retorna el camí més rapid donats un destí i un origen i la segona que calcula el temps de durada de la ruta.  També s'implementa una funció que estableix les velocitats mitjanes a la qual una persona travessa una aresta d'un cert tipus, i a partir d'aquesta informació, retorna el temps que tardarà l'usuari en travessar-la.
+Per tal de poder trobar el camí més ràpid que portarà l'usuari al restaurant desitjat, s'han creat dues funcions. La primera que retorna el camí més rapid donats un destí i un origen i la segona que calcula el temps aproximat de durada de la ruta, ja que com a punt inicial del camí s'agafa el node de tipus Street més proper a l'origen i com a punt final del camí el node de tipus Street més proper al destí. Es diu que aquest és un temps aproimat ja que no s'està tenint en compte el temps d'anada des de l'origen fins al punt considerat com inici del camí i el temps d'anada des del punt final de la ruta fins al destí.
+  
+També s'implementa una funció que estableix les velocitats mitjanes a la qual una persona travessa una aresta d'un cert tipus, i a partir d'aquesta informació, retorna el temps que tardarà l'usuari en travessar-la.
+  
+**Nota**: S'ha escollit dibuixar el camí seguint aquest criteri degut a que la alta densitat dels carrers i interseccions d'aquests de la ciutat de Barcelona, fa que començar pel node considerat com punt inicial i acabar en el node considerat com a punt final, té un grau de simulitud molt alt amb el camí que es faria començant per l'origen donat i acabar en el destí donat.
     
 ```python3
 def find_path(Street_Graph: OsmnxGraph, City_Graph: CityGraph, src: Coord, dst: Coord) -> Path: ... # Retorna el camí més curt prenent com a pes el temps
-def get_time_path(Path: Path, City_Graph: CityGraph) -> float: ... # Retorna el temps total en recorrer un camí fent servir velocitats assignades
+def get_time_path(Path: Path, City_Graph: CityGraph) -> float: ... # Retorna el temps total aproximat en recorrer un camí fent servir velocitats assignades
 def get_travel_time(type: str, distance: float) -> float: ... # Donada una aresta retorna el seu temps de travesia
 ```
 
