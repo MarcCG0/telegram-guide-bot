@@ -335,7 +335,7 @@ S'ha decidit utilitzar aquesta ruta de mostra ja que és una ruta llarga i amb t
 
 ## Informació addicional
 
-- En cas que l'usuari abans de començar a interactuar amb el bot no introdueixi la comanda `/start`, el bot **NO** funcionarà correctament.
+- En cas que l'usuari abans de començar a interactuar amb el bot (o cada cop que s'inicialitzi aquest) no introdueixi la comanda `/start`, el bot **NO** funcionarà correctament.
 
 Per instalar el packet fuzzywuzzy: 
 ```
