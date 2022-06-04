@@ -161,7 +161,7 @@ En quant a la presentació del graf del metro de Barcelona, han estat implementa
 
     
 ```python3
-def show(Metro_Graph: MetroGraph) -> None: ... # dibuixa el graf "senzill" amb les arestes negres i els nodes blaus
+def show(metro_Graph: MetroGraph) -> None: ... # dibuixa el graf "senzill" amb les arestes negres i els nodes blaus
 def plot(g: MetroGraph) -> None: ... # desa el mapa de la ciutat com a imatge
 def add_lines(m: StaticMap, g: MetroGraph) -> None: ... # afegeix les arestes del graf al StaticMap
 def add_nodes(m: StaticMap, g: MetroGraph) -> None: ...  # afegeix els nodes del graf al StaticMap 
@@ -208,33 +208,32 @@ Per a afegir nodes i arestes del *CityGraph*, s'afegirà el graf del metro *Metr
 **Nota**: la funció `nearest_nodes` del mòdul `osmnx` rep essencialment tres paràmetres: el graf del qual es vol trobar els nodes més propers, la llista de les coordenades *x* dels nodes en qüestió, i la llista de les coordenades *y* dels nodes en qüestió. 
 
 ```python3
-def add_Metro_Graph(City_Graph: CityGraph, Metro_Graph: MetroGraph) -> None: ... # afegir el graf del metro
-def add_Street_Graph(City_Graph: CityGraph, Street_Graph: OsmnxGraph) -> None: ... # afegir el graf dels carrers
-def get_access_coords(Metro_Graph: MetroGraph, y: List, x: List,
+def add_Metro_Graph(city_graph: CityGraph, metro_graph: MetroGraph) -> None: ... # afegir el graf del metro
+def add_Street_Graph(city_graph: CityGraph, street_graph: OsmnxGraph) -> None: ... # afegir el graf dels carrers
+def get_access_coords(metro_graph: MetroGraph, y: List, x: List,
                       access_nodes: List) -> None: ... # retorna i modifica les llistes dels accessos i les seves coordenades
-def link_Street_with_Access(City_Graph: CityGraph, Street_Graph: OsmnxGraph,
-                            Metro_Graph: MetroGraph) -> None: ... # enllaç d'accessos i node més proper del StreetGraph
+def link_Street_with_Access(city_graph: CityGraph, street_graph: OsmnxGraph,
+                            metro_graph: MetroGraph) -> None: ... # enllaç d'accessos i node més proper del StreetGraph
 ```
  
-Finalment construim el graf de la ciutat fent crides a cadascuna de les funcions definides anteriorment. A més també s'implementa una funció per eliminar aquells nodes i arestes auxiliars que es creen per fer el camí fins el destí demanat per l'usuari.
+Finalment construim el graf de la ciutat fent crides a cadascuna de les funcions definides anteriorment.
     
 ```python3
-def build_city_graph(Street_Graph: OsmnxGraph, Metro_Graph: MetroGraph,
-                     Accessibility: bool) -> CityGraph: ... # fusio dels dos grafs
-def delete_auxiliary_elements(City_Graph: CityGraph) -> None: ... # Elimina els nodes i arestes auxiliars que creem per fer el camí
+def build_city_graph(street_graph: OsmnxGraph, metro_graph: MetroGraph,
+                     accessibility: bool) -> CityGraph: ... # fusio dels dos grafs
 ```
 
 També s'ha creat una funció que elimina els accessos no accessibles del graf de la ciutat per quan l'usuari vulgui modificar l'accessibilitat.
   
 ```python3
-def delete_unaccessible_accesses(City_Graph: CityGraph,
-                                 Metro_Graph: MetroGraph) -> None: ... # Elimina els accessos no accessibles del graf de la ciutat
+def delete_unaccessible_accesses(city_graph: CityGraph,
+                                 metro_graph: MetroGraph) -> None: ... # Elimina els accessos no accessibles del graf de la ciutat
 ```
   
 Per mostrar-lo, s'ha seguit una metodologia semblant al que s'ha fet per la presentació del graf del metro. S'han implementat varies funcions per tal d'aconseguir dibuixar el *CityGraph* per pantalla. Després es millora aquesta mostra desant aquest graf sobre el mapa de Barcelona, gràcies a l'ajuda de l'StaticMap. Per poder aconseguir mostrar-lo sobre la imatge del mapa de Barcelona, s'han d'afegir els nodes i les arestes del graf de la ciutat sobre el mapa.
 
 ```python3
-def show_city(City_Graph: CityGraph) -> None: ... # dibuixa per pantalla el CityGraph (nodes blaus i arestes negres)
+def show_city(city_graph: CityGraph) -> None: ... # dibuixa per pantalla el CityGraph (nodes blaus i arestes negres)
 def plot_city(g: CityGraph, filename: str) -> None: ... # guarda el citygraph dins d'un arxiu filename
 def add_city_nodes(m: StaticMap, g: CityGraph) -> None: ... # afegeix els nodes del graf a l'StaticMap
 def add_city_lines(m: StaticMap, g: CityGraph) -> None: ... # afegeix les arestes del graf a l'StaticMap
@@ -247,17 +246,18 @@ També s'implementa una funció que estableix les velocitats mitjanes a la qual 
 **Nota**: S'ha escollit dibuixar el camí seguint aquest criteri degut a que la alta densitat dels carrers i interseccions d'aquests de la ciutat de Barcelona, fa que començar pel node considerat com punt inicial i acabar en el node considerat com a punt final, té un grau de simulitud molt alt amb el camí que es faria començant per l'origen donat i acabar en el destí donat.
     
 ```python3
-def find_path(Street_Graph: OsmnxGraph, City_Graph: CityGraph, src: Coord, dst: Coord) -> Path: ... # Retorna el camí més curt prenent com a pes el temps
-def get_time_path(Path: Path, City_Graph: CityGraph) -> float: ... # Retorna el temps total aproximat en recorrer un camí fent servir velocitats assignades
+def find_path(street_graph: OsmnxGraph, city_graph: CityGraph, src: Coord,
+              dst: Coord) -> Path: ... # Retorna el camí més curt prenent com a pes el temps
+def get_time_path(path: Path, city_graph: CityGraph) -> float: ... # Retorna el temps total aproximat en recorrer un camí fent servir velocitats assignades
 def get_travel_time(type: str, distance: float) -> float: ... # Donada una aresta retorna el seu temps de travesia
 ```
 
-Per pintar el camí que l'usuari ha de seguir per arribar al seu destí, s'ha creat una funció que dibuixa el camí sobre el mapa de Barcelona amb ajuda de l'StaticMap i per poder aconseguir-ho s'han afegit els nodes i les arestes del graf sobre el mapa.
+Per pintar el camí que l'usuari ha de seguir per arribar al seu destí, s'ha creat una funció que dibuixa el camí sobre el mapa de Barcelona amb ajuda de l'StaticMap i per poder aconseguir-ho s'han afegit les arestes del graf sobre el mapa.
 
 ```python3
-def plot_path(City_Graph: CityGraph, path: Path, filename: str) -> None: ... # dibuixa el camí
+def plot_path(city_graph: CityGraph, path: Path, filename: str,
+              orig_coords: Coord, dst_coords: Coord) -> None: ... # dibuixa el camí
 def add_path_lines(m: StaticMap, g: CityGraph, path: Path) -> StaticMap: ... # afegeix les arestes
-def add_path_nodes(m: StaticMap, g: CityGraph, path: Path) -> StaticMap: ... # afegeix els nodes
 ```
     
 ### Bot
