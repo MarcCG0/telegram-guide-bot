@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, TextIO, TypeAlias
-from typing import List, Tuple, Dict
+from typing import Optional, TextIO, TypeAlias, List, Tuple, Dict
 import pandas as pd  # type: ignore
 import networkx as nx  # type: ignore
 import haversine as hs  # type: ignore
@@ -19,23 +18,23 @@ class Station:
     name: str        # Nom de l'estació (no únic)
     nameline: str    # Nom de la línia de l'estació
     linecolor: str   # Color de la línia en format RGB
-    location: Point  # Un punt tal i com l'hem definit previament
+    location: Point  # Localització de l'estació
 
 
 @dataclass
 class Access:
-    id: str            # Identificador del accés
-    name: str          # Nom del accés
-    location: Point    # Posició de tipus punt del accés en qüestió
-    stationid: str     # Identificador de l'estació associada al accés
-    accessibility: bool  # True indica que és accessible, False, que no ho és
+    id: str              # Identificador del accés
+    name: str            # Nom del accés
+    location: Point      # Posició de tipus punt del accés en qüestió
+    stationid: str       # Identificador de l'estació associada al accés
+    accessibility: bool  # Indicador d'accessibilitat d'un accés
 
 
 @dataclass
 class Edge:
-    type: str          # Possibilitats: Street, Acces, Enllaç
-    distance: float    # Distancia entre node[0] and node[1]
-    color_id: str      # RGB
+    type: str            # Possibilitats: Street, Access, Link
+    distance: float      # Distancia entre edge[0] i edge[1]
+    color_id: str        # RGB
 
 
 Stations: TypeAlias = List[Station]
@@ -67,17 +66,17 @@ def read_stations() -> Stations:
     df = pd.read_csv(f, usecols=[id, stationid, name, nameline, linecolor,
                      location])
 
-    Stations: List[Station] = []
+    stations: Stations = []
 
     for row in df.itertuples():
         point: Point = get_coordinates(row.GEOMETRY)
-        Current_Station = Station(row.CODI_ESTACIO_LINIA, row.CODI_ESTACIO,
+        current_station = Station(row.CODI_ESTACIO_LINIA, row.CODI_ESTACIO,
                                   row.NOM_ESTACIO, row.NOM_LINIA,
                                   '#'+row.COLOR_LINIA, point)
         # sumem '#' al color de línia per passar-ho a format RGB
-        Stations.append(Current_Station)
+        stations.append(current_station)
 
-    return Stations
+    return stations
 
 
 def read_accesses() -> Accesses:
@@ -99,77 +98,75 @@ def read_accesses() -> Accesses:
     df = pd.read_csv(f, usecols=[id, name, location, stationid,
                      accessibility])
 
-    Accesses: List[Access] = []
+    accesses: Accesses = []
 
     for row in df.itertuples():
         coords: Point = get_coordinates(row.GEOMETRY)
-        Current_Access = Access(str(row.ID_ACCES), row.NOM_ACCES,
+        current_access = Access(str(row.ID_ACCES), row.NOM_ACCES,
                                 coords, row.ID_ESTACIO,
                                 get_accessibility(
                                     row.NOM_TIPUS_ACCESSIBILITAT))
-        Accesses.append(Current_Access)
+        accesses.append(current_access)
 
-    return Accesses
+    return accesses
 
 
 # ------------------------------------------------- #
 # FUNCIONS  I ACCIONS PER A LA PRESENTACIÓ DEL GRAF #
 # ------------------------------------------------- #
 
-def show(Metro_Graph: MetroGraph) -> None:
-    """ Imprimeix el graf Metro_Graph amb els nodes de color blau, i les
+def show(metro_graph: MetroGraph) -> None:
+    """ Imprimeix el graf metro_graph amb els nodes de color blau, i les
     arestes en negre
     """
-    coords: Dict[int, Point] = nx.get_node_attributes(Metro_Graph,
+    coords: Dict[int, Point] = nx.get_node_attributes(metro_graph,
                                                       'coordinates')
-    nx.draw(Metro_Graph, coords, node_size=10)
+    nx.draw(metro_graph, coords, node_size=10)
     plt.show()
 
 
 def plot(g: MetroGraph) -> None:
-    """ Desa el graf com una imatge amb el mapa de la ciutat de fons """
+    """ Desa el graf com una imatge amb el mapa de la ciutat de fons
+    """
     m = StaticMap(2500, 3000, 80)
-    m = add_nodes(m, g)
-    m = add_lines(m, g)
+    add_nodes(m, g)
+    add_lines(m, g)
     image = m.render()
     image.save('bcn.png')
 
 
-def add_lines(m: StaticMap, g: MetroGraph) -> StaticMap:
+def add_lines(m: StaticMap, g: MetroGraph) -> None:
     """ Donat un StaticMap i un graf, afegeix les arestes del graf a
     l'StaticMap
     """
     for edge in g.edges:
-        edge_attributes = g.get_edge_data(*edge)
-
-        if edge_attributes["attributes"].type == "Tram":
-            # Pintem l'aresta del color de la linia
-            color = edge_attributes["attributes"].color_id
+        edge_attributes: Dict = g.get_edge_data(*edge)
+        # Escollim el color de la línia a pintar
+        if edge_attributes["attributes"].type == "Railway":
+            color: str = edge_attributes["attributes"].color_id
 
         else:
-            color = "#BABAB6"  # pintem l'aresta grisa
+            color = "#BABAB6"
 
         # Pintem les arestes del color que se'ls ha assignat en el mapa
         line = Line(edge_attributes["coordinates"], color, 5)
         m.add_line(line)
-    return m
 
 
-def add_nodes(m: StaticMap, g: MetroGraph) -> StaticMap:
+def add_nodes(m: StaticMap, g: MetroGraph) -> None:
     """ Donat un StaticMap i un graf, afegeix els nodes del graf a
     l'StaticMap
     """
     for node in g.nodes():
         coords: Dict[int, Point] = nx.get_node_attributes(g, "coordinates")
-        if g.nodes[node]["type"] == "Acces":
-            # Pintem els nodes del color que se'ls ha assignat en el mapa
+
+        # Pintem els nodes del color que se'ls ha assignat en el mapa
+        if g.nodes[node]["type"] == "Access":
             marker = CircleMarker(coords[node], "#BABAB6", 4)
             m.add_marker(marker)
         else:
-            # Pintem els nodes del color que se'ls ha assignat en el mapa
             marker = CircleMarker(coords[node], "#2B2B2B", 10)
             m.add_marker(marker)
-    return m
 
 
 # ------------------------------- #
@@ -179,14 +176,19 @@ def add_nodes(m: StaticMap, g: MetroGraph) -> StaticMap:
 
 def get_accessibility(info: str) -> bool:
     """ Donat un string de la forma Accessible o No accessible
-    retorna el boolea que el representa """
-    Indicator: str = info.split()[0]
-    return not Indicator == "No"
+    retorna el boolea que li correspon
+    Pre: l'entrada ha de ser: o bé 'Accessible' o bé 'No accessible'
+    """
+    indicator: str = info.split()[0]
+    return not indicator == "No"
 
 
 def get_coordinates(info: str) -> Point:
     """ Donada una expressio de la forma Point(x_coord, y_coord) retorna un
     punt amb x_coord i y_coord
+
+    Pre: l'entrada a de correspondre a una expressió de la forma
+    Point(x_coord, y_coord)
     """
     expression: List[str] = info[7:-1].split()
     coordinates: Point = (float(expression[0]), float(expression[1]))
@@ -207,9 +209,9 @@ def getdistance(point1: Point, point2: Point) -> float:
 
 def add_nodes_and_edges_stations(station1: Station, station2: Station,
                                  metro_graph: MetroGraph) -> None:
-    """ Pre: les estacions han d'estar ordenades per línia """
+    """ Pre: les estacions han d'estar ordenades per línia al .csv"""
     """ A partir de la llista d'estacions, afegeix els nodes referents a
-    aquestes estacions al MetroGraph i si es necesari, les arestes entre si
+    aquestes estacions al metro_graph i si es necesari, les arestes entre si
     """
     # Afegim els dos nodes per poder afegir les arestes correctament
     metro_graph.add_node(station1.id, type="Station",
@@ -220,14 +222,13 @@ def add_nodes_and_edges_stations(station1: Station, station2: Station,
                          coordinates=station2.location)
 
     # Si els dos nodes que hem afegit son de la mateixa línia, els unim amb
-    # una aresta de tipus Tram
+    # una aresta de tipus Railway
     if station1.nameline == station2.nameline:
-        type = "Tram"
-        distance = getdistance(station1.location, station2.location)
-        color_id = station1.linecolor
+        type: str = "Railway"
+        distance: float = getdistance(station1.location, station2.location)
+        color_id: str = station1.linecolor
 
         edge = Edge(type, distance, color_id)
-        # Atributs: (tipus d'aresta, linia, distancia, color línia)
         metro_graph.add_edge(
             station1.id, station2.id, attributes=edge,
             coordinates=[station1.location, station2.location])
@@ -238,8 +239,8 @@ def add_edges_accesses(
         metro_graph: MetroGraph) -> None:
     """Pre: els accessos han d'estar ordenats per estacions (primer tots els
     accessos d'una estacio, després els d'una altra etc...)
-    """
-    """ Afegeix totes les arestes que connecten els accessos amb les seves
+
+     Afegeix totes les arestes que connecten els accessos amb les seves
     respectives estacions
     """
     for station in all_stations:
@@ -248,27 +249,28 @@ def add_edges_accesses(
             # Assegurar-nos que l'acces i la estació comparteixen id d'estació
             if station.stationid == access.stationid:
                 first_matching_access = True
-                type = "Acces"
-                distance = getdistance(station.location, access.location)
-                color_id = "BABAB6"
+                type: str = "Access"
+                distance: float = getdistance(station.location,
+                                              access.location)
+                color_id: str = "BABAB6"
                 edge = Edge(type, distance, color_id)
 
-                # Afegim una Aresta de tipus Acces
+                # Afegim una aresta de tipus Access
                 metro_graph.add_edge(
                     station.id, access.id, attributes=edge,
                     coordinates=[station.location, access.location])
-            # Si hem trobat un access i l'access d'aquesta iteració ja no ho
-            # és no hi ha més (doncs estan ordenats)
+            # Condició per passar a la següent estació
             elif first_matching_access:
                 break
 
 
 def add_nodes_accesses(all_accesses: Accesses,
                        metro_graph: MetroGraph) -> None:
-    """ Donats tots els accessos, els afegeix com a nodes al graf """
+    """ Donats tots els accessos, els afegeix com a nodes al graf
+    """
     for access in all_accesses:
-        # Afegim node de tipus Acces
-        metro_graph.add_node(access.id, type="Acces", name=access.name,
+        # Afegim node de tipus Access
+        metro_graph.add_node(access.id, type="Access", name=access.name,
                              coordinates=access.location,
                              accessibilitat=access.accessibility)
 
@@ -276,17 +278,18 @@ def add_nodes_accesses(all_accesses: Accesses,
 def add_link_edges(all_stations: Stations,
                    metro_graph: MetroGraph) -> None:
     """ Realitza un recorregut sobre les estacions per veure quines haurien
-    de tenir transbordament entre si
+    de tenir transbord(link) entre si
     """
     for station1 in all_stations:
         for station2 in all_stations:
+            # Comprovem que una estació amb el mateix nom difereix en línia
             if station1.nameline != station2.nameline:
                 if station1.name == station2.name:
-                    # Afegim aresta d'enllaç al graf
-                    type = "Enllaç"
-                    distance = getdistance(station1.location,
-                                           station2.location)
-                    color_id = station1.linecolor
+                    # Afegim aresta de tipus Link al graf
+                    type: str = "Link"
+                    distance: float = getdistance(station1.location,
+                                                  station2.location)
+                    color_id: str = station1.linecolor
 
                     edge = Edge(type, distance, color_id)
 
@@ -303,26 +306,26 @@ def get_metro_graph() -> MetroGraph:
     """ Retorna un graf del metro de Barcelona amb la informació dels arxius
     accessos.csv i estacions.csv
     """
-    # Graf buit que contindra la info de metro de barcelona
-    Metro_Graph: MetroGraph = nx.Graph()
+    # Graf buit que contindra la info de metro de Barcelona
+    metro_graph: MetroGraph = nx.Graph()
 
     # Obtenim la informacio dels accessos i estacions del metro de Barcelona
-    all_accesses = read_accesses()
-    all_stations = read_stations()
+    all_accesses: Accesses = read_accesses()
+    all_stations: Stations = read_stations()
 
-    qty_stations = len(all_stations)
+    qty_stations: int = len(all_stations)
     # Iterem totes les estacions dos a dos repetint sempre una estació
     for i in range(1, qty_stations):
         station1: Station = all_stations[i-1]
         station2: Station = all_stations[i]
-        # Afegim nodes de la iteració, si cal els unim amb una aresta de Tram
-        add_nodes_and_edges_stations(station1, station2, Metro_Graph)
+        # Afegim nodes de la iteració, si cal els unim amb una aresta Railway
+        add_nodes_and_edges_stations(station1, station2, metro_graph)
 
-    # Afegim tots els nodes Accessos
-    add_nodes_accesses(all_accesses, Metro_Graph)
-    # Afegim totes les arestes de tipus access entre Access i estació
-    add_edges_accesses(qty_stations, all_stations, all_accesses, Metro_Graph)
-    # Afegim totes les Arestes d'enllaç entre estació i estació
-    add_link_edges(all_stations, Metro_Graph)
+    # Afegim tots els nodes accessos
+    add_nodes_accesses(all_accesses, metro_graph)
+    # Afegim totes les arestes de tipus access entre access i station
+    add_edges_accesses(qty_stations, all_stations, all_accesses, metro_graph)
+    # Afegim totes les arestes de link entre estació i estació
+    add_link_edges(all_stations, metro_graph)
 
-    return Metro_Graph
+    return metro_graph

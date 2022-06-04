@@ -1,17 +1,17 @@
 import os
 from city import find_path, build_city_graph, plot_path, get_time_path
-from city import load_osmnx_graph, Path
+from city import load_osmnx_graph, Path, CityGraph
 from metro import get_metro_graph
-from restaurants import find_restaurants, read_restaurants
+from restaurants import find_restaurants, read_restaurants, Restaurant
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from easyinput import read
+from easyinput import read  # type: ignore
 
 
 # ------------------ VARIABLES GLOBALS ------------------- #
-Metro_Graph = get_metro_graph()
-Street_Graph = load_osmnx_graph('barcelona.grf')
-City_Graph = build_city_graph(Street_Graph, Metro_Graph, False)
-City_Graph_Accessible = build_city_graph(Street_Graph, Metro_Graph, True)
+metro_graph = get_metro_graph()
+street_graph = load_osmnx_graph('barcelona.grf')
+city_graph = build_city_graph(street_graph, metro_graph, False)
+city_graph_accessible = build_city_graph(street_graph, metro_graph, True)
 # -------------------------------------------------------- #
 
 # --------------------------------- #
@@ -35,23 +35,28 @@ def accessibility(update, context):
     """
     try:
         indication: str = context.args[0]
+        # Assegurem que l'entrada de l'usuari és correcte
         assert indication == "SI" or indication == "NO"
         if indication == "SI":
             context.user_data['accessibility'] = True
         else:
             context.user_data['accessibility'] = False
 
-        info = "Accessibilitat desitjada actualitzada correctament✅ \n"
+        msg = "Accessibilitat desitjada actualitzada correctament✅ \n"
         context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text=info)
+                                 text=msg)
     except AssertionError:
-        info1 = ("El text inserit al camp <SI/NO>, no és correcte. Per "
-                 "actualitzar l'accessibilitat , introdueix SI o NO\n")
-        context.bot.send_message(chat_id=update.effective_chat.id, text=info1)
+        info = ("El text inserit al camp <SI/NO>, no és correcte. Per "
+                "actualitzar l'accessibilitat , introdueix SI o NO\n")
+        context.bot.send_message(chat_id=update.effective_chat.id, text=info)
+    except IndexError:
+        info = ("No has inserit cap paraula al camp <SI/NO> \n")
+        context.bot.send_message(chat_id=update.effective_chat.id, text=info)
 
 
 def start(update, context):
-    """ Envia missatge de benvinguda a l'usuari i inicialitza el context """
+    """ Envia missatge de benvinguda a l'usuari i inicialitza el context
+    """
     initialize(update, context)
     context.bot.send_message(chat_id=update.effective_chat.id,
                              text="Hola " +
@@ -70,13 +75,13 @@ def help(update, context):
             "n paraules, cal fer servir la següent notació:\n"
             "/find <query(1)>;<query(2)>; ... <query(n-1)>;<query(n)>\n"
             "- 📝 /info <number> mostra la informació del restaurant "
-            "especificat pel seu numero a la llista de restaurants impresa "
+            "especificat pel seu nombre a la llista de restaurants impresa "
             "amb la comanda find \n"
             "- 👣 /guide <number> mostra el camí més curt des d'on et trobes "
             "fins al restaurant especificat pel seu nombre  a la llista de "
             "restaurants impresa amb la comanda find. Rebràs tant una guia "
             "visual com una guia verbal per facilitar-te la ruta \n"
-            "- ⏳ /travel_time mostra el temps de ruta de l'ultima ruta que "
+            "- ⏳ /travel_time mostra el temps de ruta de l'última ruta que "
             "s'ha efectuat amb la comanda /guide <number> \n"
             "- /accessibility <SI/NO> indica al bot si l'usuari vol que la "
             "ruta inclogui accessos no accessibles o no. Per exemple: "
@@ -92,31 +97,31 @@ def author(update, context):
 
 
 def find(update, context):
-    """ Donada una cerca, envia un missatge de tipus enumeració amb els 12
+    """ Donada una cerca, envia un missatge de tipus enumeració amb els
     primers restaurants que la satisfan (ordenats de més coincidencia a menys)
+    Post: la llista pot ser com a màxim de llargada 12.
     """
     try:
 
         # Obtenim la query a partir del que ha rebut el bot després de /find
-
         query: str = context.args[0]
-        # Notifiquem a l'usuari amb tots els restaurants que s'han trobat
         restaurants: Restaurants = read_restaurants()
         desired_restaurants: Restaurants = find_restaurants(query,
                                                             restaurants)
         context.user_data['desired_restaurants'] = desired_restaurants
-
+        # Comprovem que s'hagi trobat algun restaurant
         assert len(desired_restaurants) > 0
 
         info = "Aquests són els restaurants que he trobat: \n"
         context.bot.send_message(chat_id=update.effective_chat.id, text=info)
-        qty_rest = len(desired_restaurants)
+
         # Notifiquem per pantalla tots els restaurants trobats.
-        info1 = ""
+        list: str = ""
+        qty_rest: int = min(12, len(desired_restaurants))
         for i in range(0, qty_rest):
-            info1 += str(i+1)+" - "+str(desired_restaurants[i].name)+"\n"
+            list += str(i+1)+" - "+str(desired_restaurants[i].name)+"\n"
         context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text=info1)
+                                 text=list)
         mess = ("\n Recorda que per a fer servir la comanda /guide <number> "
                 "primer has d'haver compartit la teva ubicació \n")
         context.bot.send_message(chat_id=update.effective_chat.id, text=mess)
@@ -134,8 +139,8 @@ def find(update, context):
 def info(update, context):
     """ Pre: la comanda ha de ser de la forma: /info <int>, on l'enter és un
     nombre entre 1 i len(desired_restaurants) ambdós inclosos
-    """
-    """ Imprimeix per pantalla tot un seguit d'atributs del restaurant que
+
+    Imprimeix per pantalla tot un seguit d'atributs del restaurant que
     s'indiqui
     """
     try:
@@ -143,9 +148,9 @@ def info(update, context):
             context.user_data['desired_restaurants'])
         # posició del restaurant que volem trobar els atributs
         position: int = int(context.args[0])
-        # Si la llista de restaurants encara és buida
+        # Comprovem que la llista de restaurants no sigui buida
         assert len(desired_restaurants) > 0
-        # Si el restaurant que rebem no compleix la precondició, l'advertim
+        # Si el restaurant que rebem no compleix la precondició, advertim
         if 1 > position or position > len(desired_restaurants):
             info = ("Aquest nombre no pertany a cap dels restaurants de la "
                     "llista! 😭 \n")
@@ -154,13 +159,16 @@ def info(update, context):
         else:
             # Altrament, obtenir i imprimir els atributs del restaurant
             # Ordenem la info del restaurant per fer el missatge més clar
-            desired_restaurant = desired_restaurants[position-1]
-            name = desired_restaurant.name
+            desired_restaurant: Restaurant = desired_restaurants[position-1]
+            name: str = desired_restaurant.name
             direction = (str(desired_restaurant.street_name) + " " +
                          str(int(desired_restaurant.street_number)))
-            district = desired_restaurant.district
-            phone = desired_restaurant.phone
-            neighbourhood = desired_restaurant.neighbourhood
+            district: str = desired_restaurant.district
+            phone: str = desired_restaurant.phone
+            neighbourhood: str = desired_restaurant.neighbourhood
+            # Si el camp telèfon al csv està buit o no conté telèfon
+            if phone == '-' or not isinstance(phone, str):
+                phone = "No té telèfon😭"
 
             # Disenyem el missatge que volem que s'efectui per pantalla
             info = ("Aquests són els atributs del restaurant que m'has "
@@ -184,36 +192,53 @@ def info(update, context):
 
 
 def guide(update, context):
-    """ Imprimeix el camí des del punt on es troba l'usuari al restaurant al
+    """ Pre: l'usuari s'ha de trobar a Barcelona i ha d'haver enviat la seva
+    localització.
+    Imprimeix el camí des del punt on es troba l'usuari al restaurant al
     que vol anar
     """
+    # Nota: Si l'usuari no està a Barcelona, la ruta no serà realista
     try:
         desired_restaurants: Restaurants = (
             context.user_data['desired_restaurants'])
         position: int = int(context.args[0])
 
         # Obtenim les coordenades d'on es troba el restaurant en qüestió
-        dst_coords: Coord = context.user_data['dst_coords']
+        # i les coordenades d'on es troba l'usuari
+        orig_coords: Coord = context.user_data['orig_coords']
         desired_restaurant: Restaurant = desired_restaurants[position-1]
-        orig_coords: Coord = [desired_restaurant.y_coord,
-                              desired_restaurant.x_coord]
+        dst_coords: Coord = [desired_restaurant.y_coord,
+                             desired_restaurant.x_coord]
 
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text="Calculant la millor ruta ⏰ ...\n")
 
-        # Ruta des d'on es troba l'usuari fins al restaurant desitjat
-        path: Path = find_path(Street_Graph, City_Graph, dst_coords,
-                               orig_coords)
         filename = (update.effective_chat.first_name +
                     update.effective_chat.last_name + ".png")
-        # Obtenim una imatge "path.png" de la ruta a seguir
-        plot_path(City_Graph, path, filename)
-        context.user_data['travel_time'] = get_time_path(path, City_Graph)
-        # Enviem la imatge "path.png" al bot per a que la mostri per pantalla
+
+        # En funció de l'accessibilitat, ruta des d'on es troba l'usuari
+        # fins al restaurant desitjat
+        if context.user_data['accessibility']:
+            path: Path = find_path(street_graph, city_graph_accessible,
+                                   orig_coords, dst_coords)
+            plot_path(city_graph_accessible, path, filename, orig_coords,
+                      dst_coords)
+            context.user_data['travel_time'] = get_time_path(
+                path, city_graph_accessible)
+            indicate_path(path, city_graph_accessible, update, context)
+        else:
+            path: Path = find_path(street_graph, city_graph, dst_coords,
+                                   orig_coords)
+            plot_path(city_graph, path, filename, orig_coords, dst_coords)
+            context.user_data['travel_time'] = get_time_path(path, city_graph)
+            indicate_path(path, city_graph, update, context)
+        # El filename de l'imatge serà el nom i cognom de l'usuari
+        # per tal d'evitar colisions entre usuaris
+        # Enviem la imatge de la ruta al bot per a que la mostri per pantalla
         context.bot.send_photo(chat_id=update.effective_chat.id,
                                photo=open(filename, 'rb'))
-        indicate_path(path, update, context)
         os.remove(filename)
+
     except KeyError:
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text="Encara no m'has enviat la ubicació "
@@ -222,10 +247,11 @@ def guide(update, context):
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text="O bé no has escrit res al camp "
                                  "<number> o bé el nombre que hi has escrit "
-                                 "no pertany a la llista de restaurants 😭\n")
+                                 "no pertany a la llista de "
+                                 "restaurants 😭 \n")
 
 
-def indicate_path(path: Path, update, context) -> None:
+def indicate_path(path: Path, g: CityGraph, update, context) -> None:
     """ Donat un camí, notifica l'usuari dels accessos, estacions de sortida,
     i transbords que ha de fer
     """
@@ -235,31 +261,31 @@ def indicate_path(path: Path, update, context) -> None:
     count: int = 2
     for i in range(1, len_path):
 
-        if City_Graph.nodes[path[i]]["type"] == "Street":
+        if g.nodes[path[i]]["type"] == "Street":
             continue
         # Condició per entrar accessos.
-        if (City_Graph.nodes[path[i]]["type"] == "Acces" and
-                City_Graph.nodes[path[i-1]]["type"] == "Street"):
+        if (g.nodes[path[i]]["type"] == "Access" and
+                g.nodes[path[i-1]]["type"] == "Street"):
             info += (str(count) + " - Entra per l'accés: %s \n" %
-                     (City_Graph.nodes[path[i]]["name"]))
+                     (g.nodes[path[i]]["name"]))
             info += (str(count+1) + " - Agafa el metro a l'estació: %s \n" %
-                     (City_Graph.nodes[path[i]]["name"]))
+                     (g.nodes[path[i]]["name"]))
             count += 2
 
-        # Condició per a sortir per acces.
-        elif (City_Graph.nodes[path[i]]["type"] == "Acces" and
-                City_Graph.nodes[path[i-1]]["type"] == "Station"):
+        # Condició per a sortir per un access.
+        elif (g.nodes[path[i]]["type"] == "Access" and
+                g.nodes[path[i-1]]["type"] == "Station"):
             info += (str(count)+" - Ves fins l'estació: %s \n" %
-                     (City_Graph.nodes[path[i-1]]["name"]))
+                     (g.nodes[path[i-1]]["name"]))
             info += (str(count+1)+" - Surt per l'accés: %s \n" %
-                     (City_Graph.nodes[path[i]]["name"]))
+                     (g.nodes[path[i]]["name"]))
             count += 2
 
         # Condició per a fer transbords
-        elif (City_Graph.edges[path[i-1], path[i]]["attr"].type == "Enllaç"):
+        elif (g.edges[path[i-1], path[i]]["attr"].type == "Link"):
             info += (str(count) + " - Fes un transbord a l'estació: %s \n" %
-                     (City_Graph.nodes[path[i]]["name"] + " ; " +
-                      City_Graph.nodes[path[i]]["nameline"]))
+                     (g.nodes[path[i]]["name"] + " ; " +
+                      g.nodes[path[i]]["nameline"]))
             count += 1
 
     # Com que no tenim el nom del tots els carrers al graf d'Osmnx, només
@@ -270,10 +296,11 @@ def indicate_path(path: Path, update, context) -> None:
 
 
 def where(update, context):
-    """ Quan l'usuari envia la seva ubicació, l'emmagatzema """
+    """ Quan l'usuari envia la seva ubicació, l'emmagatzema
+    """
     lat, lon = (update.message.location.latitude,
                 update.message.location.longitude)
-    context.user_data['dst_coords'] = [lon, lat]
+    context.user_data['orig_coords'] = [lon, lat]
 
 
 def time(update, context):
