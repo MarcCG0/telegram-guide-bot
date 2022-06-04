@@ -291,7 +291,7 @@ A més, si l'usuari introdueix comandes amb valors incorrectes, és a dir, que n
 **Observació**: Al final del codi s'obté el token del bot i s'engega aquest fent ús de les línies de codi `updater.start_polling()` i `updater.idle()`, a la vegada que també es crea el vincle entre les funcions i el nom de la comanda mitjançant els *dispatchers*.
     
 ### Resultat final del camí
-Mostra el camí més ràpid que l'usuari ha de seguir si està situat al CC La Maquinista per poder arribar al Restaurant Domino's Pizza de la Meridiana.
+Mostra el camí més ràpid que l'usuari ha de seguir si està situat al CC La Maquinista per poder arribar al Restaurant Japonès Nou Sushi Aburi a Sarrià-Sant Gervasi.
   
 S'ha decidit utilitzar aquesta ruta de mostra ja que és una ruta llarga i amb trams a peu i en metro.
 
