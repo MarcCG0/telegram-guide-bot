@@ -16,9 +16,8 @@ El projecte consisteix en un bot de Telegram® desenvolupat amb Python que té c
 
 Vídeo que mostra el funcionament del bot:
 
-[![Alt text](https://img.youtube.com/vi/SMxTKgAOr_o/0.jpg)](https://youtube.com/shorts/SMxTKgAOr_o?feature=share)
 
-
+[![Alt text](https://img.youtube.com/vi/Ka7phXKISWI/0.jpg)](https://youtube.com/shorts/Ka7phXKISWI?feature=share)
 
 Per poder dur a terme hem hagut d'usar les següents dades:
 - El mapa dels carrers de Barcelona obtingut d'[Open Street Map](https://www.openstreetmap.org).
