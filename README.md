@@ -195,7 +195,7 @@ Les **arestes** del *CityGraph* estaran formades pels següents atributs: (edge[
   
 - **tipus d'Edges**: Link, Railway, Access, Street.  
 - edge[0], edge[1] representa on comença i acaba l'aresta (són nodes).
-- time = el temps que trigarà l'usuari en recórrer l'aresta en qüestió.
+- time és el temps que trigarà l'usuari en recórrer l'aresta en qüestió.
 - attr serà una instància de la classe Edge que recollirà: tipus, distància i color.                
                        
 
