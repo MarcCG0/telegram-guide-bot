@@ -171,7 +171,7 @@ def add_lines(m: StaticMap, g: MetroGraph) -> None: ... # afegeix les arestes de
 def add_nodes(m: StaticMap, g: MetroGraph) -> None: ...  # afegeix els nodes del graf al StaticMap 
 ```
 <p float="left">
-  <img src="show_metro_graph.png" width="400" />
+  <img src="show_metro_graph.png" width="500" />
 
   <img src="plot_metro_graph.png" width="400" /> 
 </p>
@@ -252,7 +252,7 @@ def add_city_nodes(m: StaticMap, g: CityGraph) -> None: ... # afegeix els nodes 
 def add_city_lines(m: StaticMap, g: CityGraph) -> None: ... # afegeix les arestes del graf a l'StaticMap
 ```
 <p float="left">
-  <img src="show_city_graph.png" width="400" />
+  <img src="show_city_graph.png" width="500" />
 
   <img src="plot_city_graph.png" width="400" /> 
 </p>
