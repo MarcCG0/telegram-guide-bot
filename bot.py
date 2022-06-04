@@ -188,6 +188,10 @@ def info(update, context):
                 "restaurants que t'interessin i després ja em consultaràs la "
                 "seva informació! 😭 \n")
         context.bot.send_message(chat_id=update.effective_chat.id, text=info)
+        
+    except ValueError:
+        info = ("L'entrada al camp <number> no és un enter😭\n")
+        context.bot.send_message(chat_id=update.effective_chat.id, text=info)
 
 
 def guide(update, context):
@@ -249,6 +253,9 @@ def guide(update, context):
                                  "<number> o bé el nombre que hi has escrit "
                                  "no pertany a la llista de "
                                  "restaurants 😭 \n")
+    except ValueError:
+        info = ("L'entrada al camp <number> no és un enter😭\n")
+        context.bot.send_message(chat_id=update.effective_chat.id, text=info)
 
 
 def indicate_path(path: Path, g: CityGraph, update, context) -> None:
