@@ -316,7 +316,6 @@ S'ha decidit utilitzar aquesta ruta de mostra ja que és una ruta llarga i amb t
     
 
 ## Informació addicional
-- Totes les dades utilitzades per a la realització del bot, han estat extretes dels fitxers de dades els quals es poden trobar adjunts al projecte.
 
 Per instalar el packet fuzzywuzzy: 
 ```
