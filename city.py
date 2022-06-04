@@ -19,8 +19,7 @@ Path: TypeAlias = List[NodeID]
 
 
 def get_osmnx_graph() -> OsmnxGraph:
-    """ Retorna un graf dels carrers de Barcelona
-    """
+    """ Retorna un graf dels carrers de Barcelona """
     g: OsmnxGraph = ox.graph_from_place('Barcelona, Catalonia, Spain',
                                         simplify=True, network_type='walk')
     save_osmnx_graph(g, 'barcelona.grf')
@@ -28,16 +27,14 @@ def get_osmnx_graph() -> OsmnxGraph:
 
 
 def save_osmnx_graph(g: OsmnxGraph, filename: str) -> None:
-    """ Guarda el graf g al fitxer filename
-    """
+    """ Guarda el graf g al fitxer filename """
     f = open(filename, 'wb')
     pickle.dump(g, f)
     f.close()
 
 
 def load_osmnx_graph(filename: str) -> OsmnxGraph:
-    """ Retorna el graf guardat al fitxer filename
-    """
+    """ Retorna el graf guardat al fitxer filename """
     if os.path.exists(filename):
         pickle_in = open(filename, 'rb')
         g: OsmnxGraph = pickle.load(pickle_in)
@@ -196,8 +193,7 @@ def build_city_graph(street_graph: OsmnxGraph, metro_graph: MetroGraph,
 
 def delete_unaccessible_accesses(city_graph: CityGraph,
                                  metro_graph: MetroGraph) -> None:
-    """ Elimina els accessos no accessibles del graf de la ciutat
-    """
+    """ Elimina els accessos no accessibles del graf de la ciutat """
     for node in metro_graph.nodes:
         if (metro_graph.nodes[node]["type"] == "Access" and
                 not metro_graph.nodes[node]["accessibilitat"]):
@@ -212,16 +208,15 @@ def delete_unaccessible_accesses(city_graph: CityGraph,
 def show_city(city_graph: CityGraph) -> None:
     """ Pre: els nodes del graf d'entrada han de tenir un atribut
     coordinates (on es troba ubicat)
-    Donat un Graf el dibuixa per pantalla
     """
+    """ Donat un Graf el dibuixa per pantalla """
     coords: Coord = nx.get_node_attributes(city_graph, "coordinates")
     nx.draw(city_graph, coords, node_size=10)
     plt.show()
 
 
 def plot_city(g: CityGraph, filename: str) -> None:
-    """ Desa dins d'un arxiu filename la imatge del CityGraph
-    """
+    """ Desa dins d'un arxiu filename la imatge del CityGraph """
     m = StaticMap(2500, 3000, 80)
     add_city_nodes(m, g)
     add_city_lines(m, g)
@@ -268,7 +263,8 @@ def add_city_lines(m: StaticMap, g: CityGraph) -> None:
 
 def find_path(street_graph: OsmnxGraph, city_graph: CityGraph, src: Coord,
               dst: Coord) -> Path:
-    """ Donat un origen src i un desti dst, retorna el camí Path més ràpid
+    """ Donat un origen src i un desti dst, retorna el camí Path més
+    ràpid
     """
     # Trobem els nodes del street_graph més propers al src i dst
     # I busquem el camí més ràpid entre sí
@@ -283,8 +279,7 @@ def find_path(street_graph: OsmnxGraph, city_graph: CityGraph, src: Coord,
 
 
 def get_time_path(path: Path, city_graph: CityGraph) -> float:
-    """ Donada una ruta, retorna el temps que es triga a fer-la
-    """
+    """ Donada una ruta, retorna el temps que es triga a fer-la """
     qty_nodes = len(path)
     time: float = 0
     for i in range(1, qty_nodes):

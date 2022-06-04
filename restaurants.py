@@ -89,8 +89,9 @@ def find_matching_restaurants(list_query: List,
                               restaurants: Restaurants) -> Restaurants:
     """ Donada una cerca, multiple o única, la duu a terme tot utilitzant
     la cerca difusa (Distància de levenshtein).
-    Post: cada restaurant de la llista retornada ha de complir amb una mitjana
-    de ratio 60 totes les paraules.
+    """
+    """ Post: cada restaurant de la llista retornada ha de complir amb una
+    mitjana de ratio 60 totes les paraules.
     """
     # Inicialitzem la llista i el diccionari buits
     matching_with_query: Restaurants = []

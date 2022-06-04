@@ -55,8 +55,7 @@ def accessibility(update, context):
 
 
 def start(update, context):
-    """ Envia missatge de benvinguda a l'usuari i inicialitza el context
-    """
+    """ Envia missatge de benvinguda a l'usuari i inicialitza el context """
     initialize(update, context)
     context.bot.send_message(chat_id=update.effective_chat.id,
                              text="Hola " +
@@ -99,8 +98,8 @@ def author(update, context):
 def find(update, context):
     """ Donada una cerca, envia un missatge de tipus enumeració amb els
     primers restaurants que la satisfan (ordenats de més coincidencia a menys)
-    Post: la llista pot ser com a màxim de llargada 12.
     """
+    """ Post: la llista pot ser com a màxim de llargada 12. """
     try:
 
         # Obtenim la query a partir del que ha rebut el bot després de /find
@@ -139,8 +138,8 @@ def find(update, context):
 def info(update, context):
     """ Pre: la comanda ha de ser de la forma: /info <int>, on l'enter és un
     nombre entre 1 i len(desired_restaurants) ambdós inclosos
-
-    Imprimeix per pantalla tot un seguit d'atributs del restaurant que
+    """
+    """ Imprimeix per pantalla tot un seguit d'atributs del restaurant que
     s'indiqui
     """
     try:
@@ -194,7 +193,8 @@ def info(update, context):
 def guide(update, context):
     """ Pre: l'usuari s'ha de trobar a Barcelona i ha d'haver enviat la seva
     localització.
-    Imprimeix el camí des del punt on es troba l'usuari al restaurant al
+    """
+    """ Imprimeix el camí des del punt on es troba l'usuari al restaurant al
     que vol anar
     """
     # Nota: Si l'usuari no està a Barcelona, la ruta no serà realista
@@ -296,16 +296,15 @@ def indicate_path(path: Path, g: CityGraph, update, context) -> None:
 
 
 def where(update, context):
-    """ Quan l'usuari envia la seva ubicació, l'emmagatzema
-    """
+    """ Quan l'usuari envia la seva ubicació, l'emmagatzema """
     lat, lon = (update.message.location.latitude,
                 update.message.location.longitude)
     context.user_data['orig_coords'] = [lon, lat]
 
 
 def time(update, context):
-    """ Retorna la durada de la ruta demanada, en cas que no s'hagi demanat cap
-    ruta s'envia un missatge avisant del problema
+    """ Retorna la durada de la ruta demanada, en cas que no s'hagi demanat
+    cap ruta s'envia un missatge avisant del problema
     """
     try:
         assert context.user_data['travel_time'] > 0

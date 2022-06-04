@@ -126,8 +126,7 @@ def show(metro_graph: MetroGraph) -> None:
 
 
 def plot(g: MetroGraph) -> None:
-    """ Desa el graf com una imatge amb el mapa de la ciutat de fons
-    """
+    """ Desa el graf com una imatge amb el mapa de la ciutat de fons """
     m = StaticMap(2500, 3000, 80)
     add_nodes(m, g)
     add_lines(m, g)
@@ -177,19 +176,19 @@ def add_nodes(m: StaticMap, g: MetroGraph) -> None:
 def get_accessibility(info: str) -> bool:
     """ Donat un string de la forma Accessible o No accessible
     retorna el boolea que li correspon
-    Pre: l'entrada ha de ser: o bé 'Accessible' o bé 'No accessible'
     """
+    """ Pre: l'entrada ha de ser: o bé 'Accessible' o bé 'No accessible' """
     indicator: str = info.split()[0]
     return not indicator == "No"
 
 
 def get_coordinates(info: str) -> Point:
-    """ Donada una expressio de la forma Point(x_coord, y_coord) retorna un
-    punt amb x_coord i y_coord
-
-    Pre: l'entrada a de correspondre a una expressió de la forma
+    """ Pre: l'entrada a de correspondre a una expressió de la forma
     Point(x_coord, y_coord)
     """
+    """ Donada una expressio de la forma Point(x_coord, y_coord) retorna un
+    punt amb x_coord i y_coord"""
+
     expression: List[str] = info[7:-1].split()
     coordinates: Point = (float(expression[0]), float(expression[1]))
     return coordinates
@@ -209,7 +208,7 @@ def getdistance(point1: Point, point2: Point) -> float:
 
 def add_nodes_and_edges_stations(station1: Station, station2: Station,
                                  metro_graph: MetroGraph) -> None:
-    """ Pre: les estacions han d'estar ordenades per línia al .csv"""
+    """ Pre: les estacions han d'estar ordenades per línia al .csv """
     """ A partir de la llista d'estacions, afegeix els nodes referents a
     aquestes estacions al metro_graph i si es necesari, les arestes entre si
     """
@@ -237,10 +236,10 @@ def add_nodes_and_edges_stations(station1: Station, station2: Station,
 def add_edges_accesses(
         qty_stations: int, all_stations: Stations, all_accesses: Accesses,
         metro_graph: MetroGraph) -> None:
-    """Pre: els accessos han d'estar ordenats per estacions (primer tots els
+    """ Pre: els accessos han d'estar ordenats per estacions (primer tots els
     accessos d'una estacio, després els d'una altra etc...)
-
-     Afegeix totes les arestes que connecten els accessos amb les seves
+    """
+    """ Afegeix totes les arestes que connecten els accessos amb les seves
     respectives estacions
     """
     for station in all_stations:
@@ -266,8 +265,7 @@ def add_edges_accesses(
 
 def add_nodes_accesses(all_accesses: Accesses,
                        metro_graph: MetroGraph) -> None:
-    """ Donats tots els accessos, els afegeix com a nodes al graf
-    """
+    """ Donats tots els accessos, els afegeix com a nodes al graf """
     for access in all_accesses:
         # Afegim node de tipus Access
         metro_graph.add_node(access.id, type="Access", name=access.name,
