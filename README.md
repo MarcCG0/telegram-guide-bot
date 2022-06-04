@@ -171,9 +171,9 @@ def add_lines(m: StaticMap, g: MetroGraph) -> None: ... # afegeix les arestes de
 def add_nodes(m: StaticMap, g: MetroGraph) -> None: ...  # afegeix els nodes del graf al StaticMap 
 ```
 <p float="left">
-  <img src="show_metro_graph.png" width="300" />
+  <img src="show_metro_graph.png" width="400" />
 
-  <img src="plot_metro_graph.png" width="300" /> 
+  <img src="plot_metro_graph.png" width="400" /> 
 </p>
 
 Per a la creació del graf, només s'ha implementat una funció que retorna el graf del metro de Barcelona amb la informació dels dos arxius llegits anteriorment. Per dur a terme aquesta construcció, la funció següent fa ús de totes les funcions esmentades prèviament. 
@@ -252,9 +252,9 @@ def add_city_nodes(m: StaticMap, g: CityGraph) -> None: ... # afegeix els nodes 
 def add_city_lines(m: StaticMap, g: CityGraph) -> None: ... # afegeix les arestes del graf a l'StaticMap
 ```
 <p float="left">
-  <img src="show_city_graph.png" width="300" />
+  <img src="show_city_graph.png" width="400" />
 
-  <img src="plot_city_graph.png" width="300" /> 
+  <img src="plot_city_graph.png" width="400" /> 
 </p>
 
 - Per tal de poder trobar el camí més ràpid que portarà l'usuari al restaurant desitjat, s'han creat dues funcions. La primera que retorna el camí més ràpid donats un destí i un origen i la segona que calcula el temps aproximat de durada de la ruta, ja que com a punt inicial del camí s'agafa el node de tipus Street més proper a l'origen i com a punt final del camí el node de tipus Street més proper al destí. 
