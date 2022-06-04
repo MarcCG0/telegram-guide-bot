@@ -33,10 +33,10 @@ Per poder dur a terme aquest projecte s'han hagut d'usar les següents dades:
 ## Instruccions
 Per tal de poder utilitzar el bot, primer l'usuari haurà de tenir instal·lada l'aplicació Telegram®. Posteriorment, s'haurà de registrar i a l'apartat de **xats** haurà de buscar `MetroYourRestaurant` i entrar en el xat per poder interactuar amb el bot i rebre les indicacions correctes per arribar al restaurant desitjat.
 
-Per inicialitzar el bot l'usuari haurà d'introduir la comanda `/start`. A més, podrà obtenir informació addicional de totes les comandes disponibles introduint `/help`, que li mostrarà un llistat d'aquestes amb la funcionalitat de cadascuna i només caldrà que se segueixin les indicacions que el mateix bot li anirà proporcionant.
+Per inicialitzar el bot, l'usuari haurà d'introduir la comanda `/start`. A més, podrà obtenir informació addicional de totes les comandes disponibles introduint `/help`, que li mostrarà un llistat d'aquestes amb la funcionalitat de cadascuna i només caldrà que se segueixin les indicacions que el mateix bot li anirà proporcionant.
 
 #### Comandes disponibles
-`/start` Inicialitza el bot. Indispensable cada cop que s'inicialitzi una nova conversa amb el bot per tal d'inicialitzar-lo correctament. Si no s'inicialitza, l'usuari no rebrà totes les advertències d'error. 
+`/start` Inicialitza el bot. Indispensable cada cop que es comenci una nova conversa amb el bot per tal d'inicialitzar-lo correctament. Si no s'inicialitza, l'usuari no rebrà totes les advertències d'error. 
 
 `/help` Mostra un llistat de les comandes disponibles i la funcionalitat d'aquestes. 
 
@@ -54,6 +54,7 @@ Per inicialitzar el bot l'usuari haurà d'introduir la comanda `/start`. A més,
 
 ## Requeriments
 Per tal de poder utilitzar sense cap problema el bot implementat, caldrà instal·lar les llibreries adjuntes en el fitxer `requirements.txt`.
+
 Per instal·lar-ho, només cal que s'introdueixi a la linia de comandes `pip install -r requirements.txt` estant dins el directori on es tenen els fitxers del projecte.
 
 ## Funcionalitat dels moduls
