@@ -54,10 +54,11 @@ Per inicialitzar el, bot haurà d'introduir la comanda `/start`. A més podrà o
 
 ## Requeriments
 Per tal de poder utilitzar sense cap problema el bot implementat, caldrà instal·lar les llibreries adjuntes en el fitxer `requirements.txt`.
+Per instal·lar-ho, només cal que s'introdueixi a la linia de comandes `pip install -r requirements.txt` estant dins el directori on es tenen els fitxers del projecte.
 
 ## Funcionalitat dels moduls
 ### Restaurants
-El mòdul `restaurants.py` recull la definició de la classe Restaurant amb tots els atributs que necessitarem durant tot el projecte.
+El mòdul `restaurants.py` recull la definició de la classe Restaurant amb tots els atributs que es necessitaran durant tot el projecte.
 
 ```python3
 @dataclass
@@ -71,7 +72,7 @@ També és l'encarregat de llegir totes les dades necessàries del fitxer **rest
 ```python3
 def read_restaurants() -> Restaurants: ...
 ```  
-També trobem la implementació dels diferents tipus de cerques (múltiple i difusa) per tal que quan l'usuari busqui un restaurant, el bot sigui capaç de retornar-li una llista que la satisfaci.
+També es troba la implementació dels diferents tipus de cerques (múltiple i difusa) per tal que quan l'usuari busqui un restaurant, el bot sigui capaç de retornar-li una llista que la satisfaci.
     
 ```python3
 def get_dictionary(restaurants: Restaurants) -> Dict[str, Restaurant]: ...
@@ -142,7 +143,7 @@ Dins d'aquestes dades es poden trobar les següents:
   
 ```python3
 def add_nodes_and_edges_stations(station1: Station, station2: Station,
-                                 metro_graph: MetroGraph) -> None: ... # Sempre hi haurà un node que estarà ja afegit (menys la primera crida), però es fa d'aquesta manera per afegir totes les arestes de tipus Tram correctament i alhora.
+                                 metro_graph: MetroGraph) -> None: ... # Sempre hi haurà un node que estarà ja afegit (menys la primera crida), però es fa d'aquesta manera per afegir totes les arestes de tipus Railway correctament i alhora.
 def add_edges_accesses(
         qty_stations: int, all_stations: Stations, all_accesses: Accesses,
         metro_graph: MetroGraph) -> None: ... # Afegeix les arestes des dels accessos a la estació que li correspon a cada accés. 
@@ -210,6 +211,7 @@ def load_osmnx_graph(filename: str) -> OsmnxGraph: ...  # retorna el graf guarda
 ```
 
 Per a afegir nodes i arestes del *CityGraph*, s'afegirà el graf del metro *MetroGraph* i el graf dels carrers de la ciutat *StreetGraph* a un graf buit. A més també s'observa que cal enllaçar els accessos del metro amb el node més proper del *StreetGraph* , per tant s'implementa una altra funció amb aquest fi. Per poder fer aquests enllaços, caldrà fer ús de la funció `nearest_nodes` que farà servir la sortida de la funció *get_access_coords()*. 
+
 **Nota**: la funció `nearest_nodes` del mòdul `osmnx` rep essencialment tres paràmetres: el graf del qual es vol trobar els nodes més propers, la llista de les coordenades *x* dels nodes en qüestió, i la llista de les coordenades *y* dels nodes en qüestió. 
 
 ```python3
@@ -225,7 +227,7 @@ Finalment construim el graf de la ciutat fent crides a cadascuna de les funcions
     
 ```python3
 def build_city_graph(street_graph: OsmnxGraph, metro_graph: MetroGraph,
-                     accessibility: bool) -> CityGraph: ... # fusio dels dos grafs
+                     accessibility: bool) -> CityGraph: ... # fusió dels dos grafs
 ```
 
 També s'ha creat una funció que elimina els accessos no accessibles del graf de la ciutat per quan l'usuari vulgui modificar l'accessibilitat.
@@ -235,7 +237,7 @@ def delete_unaccessible_accesses(city_graph: CityGraph,
                                  metro_graph: MetroGraph) -> None: ... # Elimina els accessos no accessibles del graf de la ciutat
 ```
   
-Per mostrar-lo, s'ha seguit una metodologia semblant al que s'ha fet per la presentació del graf del metro. S'han implementat varies funcions per tal d'aconseguir dibuixar el *CityGraph* per pantalla. Després es millora aquesta mostra desant aquest graf sobre el mapa de Barcelona, gràcies a l'ajuda del mòdul `StaticMap`. Per poder aconseguir mostrar-lo sobre la imatge del mapa de Barcelona, s'han d'afegir els nodes i les arestes del graf de la ciutat sobre el mapa.
+Per mostrar-lo, s'ha seguit una metodologia semblant a la que s'ha fet per la presentació del graf del metro. S'han implementat varies funcions per tal d'aconseguir dibuixar el *CityGraph* per pantalla. Després es millora aquesta mostra desant aquest graf sobre el mapa de Barcelona, gràcies a l'ajuda del mòdul `StaticMap`. Per poder aconseguir mostrar-lo sobre la imatge del mapa de Barcelona, s'han d'afegir els nodes i les arestes del graf de la ciutat sobre el mapa.
 
 ```python3
 def show_city(city_graph: CityGraph) -> None: ... # dibuixa per pantalla el CityGraph (nodes blaus i arestes negres)
