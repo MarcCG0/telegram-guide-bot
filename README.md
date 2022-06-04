@@ -149,7 +149,7 @@ def add_edges_accesses(
         qty_stations: int, all_stations: Stations, all_accesses: Accesses,
         metro_graph: MetroGraph) -> None: ... # Afegeix les arestes des dels accessos a la estació que li correspon a cada accés. 
 def add_nodes_accesses(all_accesses: Accesses,
-                       metro_graph: MetroGraph) -> None: ... # Afegeix tots els nodes de tipus accés
+                       metro_graph: MetroGraph) -> None: ... # Afegeix tots els nodes de tipus Access
 def add_link_edges(all_stations: Stations,
                    metro_graph: MetroGraph) -> None: ... # Afegeix totes les arestes de transbord
 ```
